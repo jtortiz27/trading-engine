@@ -1,0 +1,1 @@
+// Logger for MongoDB stub

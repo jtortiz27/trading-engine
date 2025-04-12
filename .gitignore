@@ -1,0 +1,42 @@
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDEs
+.vscode/
+.idea/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Build outputs
+bin/
+obj/
+*.log
+*.tmp
+*.cache
+
+# Node/npm
+node_modules/
+dist/
+
+# .NET
+*.pdb
+*.dbmdl
+*.bak
+*.zip
+*.nupkg
+project.lock.json
+project.fragment.lock.json
+*.sln.docstates
+
+# Java
+*.class
+*.jar
+*.war
+*.ear
+
+# Python
+__pycache__/
+*.py[cod]
