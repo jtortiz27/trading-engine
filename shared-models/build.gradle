@@ -1,16 +1,12 @@
 plugins {
     id 'java'
-    id 'io.spring.dependency-management'
     id 'java-library'
+    id 'io.spring.dependency-management'
 }
 
 dependencies {
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
-}
-
-bootJar {
-    enabled = false
 }
 
 jar {

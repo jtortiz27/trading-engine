@@ -5,9 +5,12 @@ buildscript {
     repositories {
         mavenCentral()
     }
-    dependencies {
-        classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
-    }
+}
+
+plugins {
+    id 'java'
+    id 'io.spring.dependency-management' version '1.1.7' apply false
+    id 'org.springframework.boot' version "${springBootVersion}"
 }
 
 allprojects {
@@ -18,13 +21,24 @@ allprojects {
 
 subprojects {
     apply plugin: 'java'
-    apply plugin: 'org.springframework.boot'
+
+    if (project.name != 'shared-models') {
+        apply plugin: 'org.springframework.boot'
+    }
 
     group = 'com.trading'
     version = '1.0.0'
     sourceCompatibility = '21'
 
+    apply plugin: 'io.spring.dependency-management'
+
+    dependencyManagement {
+        imports {
+            mavenBom "org.springframework.boot:spring-boot-dependencies:${springBootVersion}"
+        }
+    }
+
     dependencies {
-        implementation "org.projectlombok:lombok:1.18.38"
+        implementation "org.projectlombok:lombok"
     }
 }

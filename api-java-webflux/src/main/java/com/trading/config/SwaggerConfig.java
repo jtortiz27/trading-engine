@@ -1,0 +1,19 @@
+package com.trading.config;
+
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.info.Info;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+public class SwaggerConfig {
+
+    @Bean
+    public OpenAPI tradingEngineOpenAPI() {
+        return new OpenAPI()
+                .info(new Info()
+                        .title("Trading Engine API")
+                        .description("API for market-based trade recommendations")
+                        .version("1.0.0"));
+    }
+}
