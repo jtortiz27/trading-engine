@@ -1,0 +1,8 @@
+spring:
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017
+      database: testDB
+api:
+  key: INSERT_KEY_HERE
+  url: INSERT_URL_HERE

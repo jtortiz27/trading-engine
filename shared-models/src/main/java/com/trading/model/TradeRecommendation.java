@@ -11,5 +11,4 @@ public class TradeRecommendation {
     private String symbol;
     private String action;
     private double confidence;
-    // getters/setters
 }

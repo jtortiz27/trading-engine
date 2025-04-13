@@ -1,6 +1,8 @@
 package com.trading.util;
 
 import com.trading.model.StockFeatures;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -8,11 +10,16 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.LocalDateTime;
 
+@Component
 public class LiveMarketFetcher {
 
-    public static StockFeatures fetch(String symbol) {
+    @Value("${api.key}")
+    private String token;
+    @Value("${api.url}")
+    private String apiUrl;
+
+    public StockFeatures fetch(String symbol) {
         try {
-            String token = System.getenv("IEX_CLOUD_TOKEN"); // Set this in your env
             String url = "https://cloud.iexapis.com/stable/stock/" + symbol + "/quote?token=" + token;
 
             HttpClient client = HttpClient.newHttpClient();
