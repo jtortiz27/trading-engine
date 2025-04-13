@@ -13,6 +13,7 @@ Thumbs.db
 # Build outputs
 bin/
 obj/
+*/build/
 *.log
 *.tmp
 *.cache
@@ -40,3 +41,6 @@ project.fragment.lock.json
 # Python
 __pycache__/
 *.py[cod]
+
+#Gradle
+*.gradle/
