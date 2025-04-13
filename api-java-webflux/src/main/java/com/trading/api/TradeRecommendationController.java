@@ -12,10 +12,10 @@ import reactor.core.publisher.Mono;
 @RestController
 @RequestMapping("/recommendations")
 public class TradeRecommendationController {
-    private final TradeService tradeService;
+  private final TradeService tradeService;
 
-    @GetMapping
-    public Mono<TradeRecommendation> getRecommendation(@RequestParam String symbol) {
-        return tradeService.generateRecommendation(symbol);
-    }
+  @GetMapping
+  public Mono<TradeRecommendation> getRecommendation(@RequestParam String symbol) {
+    return tradeService.generateRecommendation(symbol);
+  }
 }

@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class TradeRecommendation {
-    private String symbol;
-    private String action;
-    private double confidence;
+  private String symbol;
+  private String action;
+  private double confidence;
 }

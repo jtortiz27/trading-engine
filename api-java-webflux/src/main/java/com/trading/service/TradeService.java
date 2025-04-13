@@ -11,15 +11,16 @@ import reactor.core.publisher.Mono;
 @Service
 @RequiredArgsConstructor
 public class TradeService {
-    private final WebClient webClient = WebClient.create(System.getenv("MODEL_SERVER_URL"));
-    private final LiveMarketFetcher liveMarketFetcher;
+  private final WebClient webClient = WebClient.create(System.getenv("MODEL_SERVER_URL"));
+  private final LiveMarketFetcher liveMarketFetcher;
 
-    public Mono<TradeRecommendation> generateRecommendation(String symbol) {
-        StockFeatures features = liveMarketFetcher.fetch(symbol);
-        return webClient.post()
-            .uri("/infer")
-            .bodyValue(features)
-            .retrieve()
-            .bodyToMono(TradeRecommendation.class);
-    }
+  public Mono<TradeRecommendation> generateRecommendation(String symbol) {
+    StockFeatures features = liveMarketFetcher.fetch(symbol);
+    return webClient
+        .post()
+        .uri("/infer")
+        .bodyValue(features)
+        .retrieve()
+        .bodyToMono(TradeRecommendation.class);
+  }
 }

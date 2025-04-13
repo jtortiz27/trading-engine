@@ -11,6 +11,7 @@ plugins {
     id 'java'
     id 'io.spring.dependency-management' version '1.1.7' apply false
     id 'org.springframework.boot' version "${springBootVersion}"
+    id 'com.diffplug.spotless' version '6.25.0'
 }
 
 allprojects {
@@ -25,6 +26,21 @@ subprojects {
     if (project.name != 'shared-models') {
         apply plugin: 'org.springframework.boot'
     }
+
+    apply plugin: 'com.diffplug.spotless'
+
+    spotless {
+        java {
+            googleJavaFormat('1.17.0')
+            target 'src/**/*.java'
+        }
+    }
+
+    // Ensure Spotless runs before build
+    tasks.named('build').configure {
+        dependsOn 'spotlessApply'
+    }
+
 
     group = 'com.trading'
     version = '1.0.0'
