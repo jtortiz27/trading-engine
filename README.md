@@ -1,15 +1,11 @@
-# Trading Engine Scaffold
-
-## 📦 Services
-- api-java-webflux: REST API
-- model-sidecar: ONNX inference server
-- model-sidecar-dotnet: .NET version
-- scraper-playwright-java: News scraper
-- model-training: Retrains model periodically
-- frontend-dashboard: Dashboard UI
-- metrics-logger: Stores predictions in MongoDB
-
-## 🛠 Getting Started
+## 🚀 Push to GitHub
 ```bash
-docker-compose up --build
+cd TradingEngine_RepoReady_WithGitignore
+
+git init
+git remote add origin https://github.com/YOUR_USERNAME/trading-engine.git
+git add .
+git commit -m "Initial commit: full trading engine with MAUI + SDK"
+git branch -M main
+git push -u origin main
 ```

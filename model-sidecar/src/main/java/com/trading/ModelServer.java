@@ -1,1 +1,0 @@
-// Java model sidecar stub

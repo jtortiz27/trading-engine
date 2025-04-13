@@ -1,0 +1,3 @@
+rootProject.name = 'trading-engine'
+
+include ('api-java-webflux','model-sidecar','scraper-playwright-java','model-training', "shared-models")

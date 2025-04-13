@@ -1,0 +1,30 @@
+buildscript {
+    ext {
+        springBootVersion = '3.4.4'
+    }
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}"
+    }
+}
+
+allprojects {
+    repositories {
+        mavenCentral()
+    }
+}
+
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'org.springframework.boot'
+
+    group = 'com.trading'
+    version = '1.0.0'
+    sourceCompatibility = '21'
+
+    dependencies {
+        implementation "org.projectlombok:lombok:1.18.38"
+    }
+}

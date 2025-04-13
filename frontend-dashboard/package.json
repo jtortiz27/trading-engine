@@ -1,0 +1,7 @@
+{
+  "name": "frontend-dashboard",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "echo \"No frontend bundler configured yet\""
+  }
+}
