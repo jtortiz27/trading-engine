@@ -44,3 +44,4 @@ __pycache__/
 
 #Gradle
 *.gradle/
+*gradle*
