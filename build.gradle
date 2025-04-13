@@ -41,4 +41,9 @@ subprojects {
     dependencies {
         implementation "org.projectlombok:lombok"
     }
+
+}
+
+bootJar {
+    enabled = false
 }
