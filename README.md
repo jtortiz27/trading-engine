@@ -23,7 +23,7 @@ The Trading Engine is a modular machine learning-powered system designed to deli
 
 - **Tech**: Spring WebFlux, Reactive WebClient
 - **Endpoints**:
-    - `GET /recommendation/{symbol}` – fetches a live recommendation for a given stock symbol
+    - `GET /recommendations/?symbol={symbol}` – fetches a live recommendation for a given stock symbol
 - **Swagger UI**:
     - Available at: `http://localhost:8080/swagger-ui.html`
 - **Dependencies**:
