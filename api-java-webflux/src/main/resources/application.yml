@@ -3,6 +3,8 @@ spring:
     mongodb:
       uri: mongodb://localhost:27017
       database: testDB
+model-server:
+  url: http://localhost:8081
 api:
   key: INSERT_KEY_HERE
   url: INSERT_URL_HERE

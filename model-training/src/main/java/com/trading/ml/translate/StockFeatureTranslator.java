@@ -26,7 +26,7 @@ public class StockFeatureTranslator implements Translator<StockFeatures, TradeRe
     NDArray output = list.singletonOrThrow();
     float[] predictions = output.toFloatArray();
     TradeRecommendation rec = new TradeRecommendation();
-    rec.setAction(predictions[0] > predictions[1] ? "BUY" : "SELL");
+    rec.setLabel(predictions[0] > predictions[1] ? "BUY" : "SELL");
     rec.setConfidence(Math.max(predictions[0], predictions[1]));
     return rec;
   }

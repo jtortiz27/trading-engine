@@ -39,7 +39,7 @@ public class InMemoryDataset extends ArrayDataset {
         .map(
             label -> {
               float[] encoded = new float[3];
-              switch (label.getAction()) {
+              switch (label.getLabel()) {
                 case "BUY" -> encoded[0] = 1f;
                 case "SELL" -> encoded[1] = 1f;
                 default -> encoded[2] = 1f;

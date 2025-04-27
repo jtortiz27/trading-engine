@@ -9,6 +9,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class TradeRecommendation {
   private String symbol;
-  private String action;
+  private String label;
   private double confidence;
 }
