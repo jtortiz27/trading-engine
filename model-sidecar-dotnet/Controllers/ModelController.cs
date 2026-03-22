@@ -1,7 +1,5 @@
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.ML.OnnxRuntime;
-using Microsoft.ML.OnnxRuntime.Tensors;
-using TradingEngine.SDK.Models;
 
 [ApiController]
 [Route("[controller]")]

@@ -113,6 +113,7 @@ public class WebfluxConfig {
     public WebClient webClient() {
         return WebClient.builder()
                 .baseUrl(modelServerUrl)
+
                 .filter(logOutgoingRequest()) // Outgoing request logging
                 .build();
     }

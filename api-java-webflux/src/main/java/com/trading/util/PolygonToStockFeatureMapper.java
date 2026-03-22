@@ -1,6 +1,6 @@
 package com.trading.util;
 
-import com.trading.api.resource.polygon.ExponentialMovingAverageResource;
+import com.trading.api.resource.polygon.stock.ExponentialMovingAverageResource;
 import com.trading.model.StockFeatures;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -19,7 +19,8 @@ public class PolygonToStockFeatureMapper {
                     features.setTimestamp(Instant.ofEpochMilli(value.getTimestampForAggregateWindowStart()));
 //                    features.setPriceChange(value.getValue()); // or derive change over time
                     features.setSentimentScore(mapSentiment(getNewsSentiment("news"))); // enrich later
-                    features.setSymbol(resource.getUnderlying().getAggregates().getFirst().getTicker());
+                    features.setSymbol(value.getTicker());
+                    features.setCurrentVolume(value.getTradingVolume().doubleValue());
                     return features;
                 })
                 .toList();
