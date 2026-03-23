@@ -168,16 +168,28 @@ jobs:
           echo "| Module | Status |" >> $GITHUB_STEP_SUMMARY
           echo "|--------|--------|" >> $GITHUB_STEP_SUMMARY
           
-          # Check each job status
-          jobs=("build-api-java-webflux" "build-model-sidecar" "build-model-training" "build-scraper" "spotless-check")
+          # Define job statuses
+          API_WEBFLUX="${{ needs.build-api-java-webflux.result }}"
+          MODEL_SIDECAR="${{ needs.build-model-sidecar.result }}"
+          MODEL_TRAINING="${{ needs.build-model-training.result }}"
+          SCRAPER="${{ needs.build-scraper.result }}"
+          SPOTLESS="${{ needs.spotless-check.result }}"
           
-          for job in "${jobs[@]}"; do
-            status="${{ needs.${job}.result }}"
+          # Helper function to print status
+          print_status() {
+            local name="$1"
+            local status="$2"
             if [ "$status" == "success" ]; then
-              echo "| ${job} | ✅ Passed |" >> $GITHUB_STEP_SUMMARY
+              echo "| ${name} | ✅ Passed |" >> $GITHUB_STEP_SUMMARY
             elif [ "$status" == "skipped" ]; then
-              echo "| ${job} | ⏭️ Skipped (no changes) |" >> $GITHUB_STEP_SUMMARY
+              echo "| ${name} | ⏭️ Skipped (no changes) |" >> $GITHUB_STEP_SUMMARY
             else
-              echo "| ${job} | ❌ Failed |" >> $GITHUB_STEP_SUMMARY
+              echo "| ${name} | ❌ Failed |" >> $GITHUB_STEP_SUMMARY
             fi
-          done
+          }
+          
+          print_status "build-api-java-webflux" "$API_WEBFLUX"
+          print_status "build-model-sidecar" "$MODEL_SIDECAR"
+          print_status "build-model-training" "$MODEL_TRAINING"
+          print_status "build-scraper" "$SCRAPER"
+          print_status "spotless-check" "$SPOTLESS"
