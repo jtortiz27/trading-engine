@@ -1,0 +1,58 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' apply false
+	id 'io.spring.dependency-management'
+}
+
+group = 'com.trading'
+version = '1.0.0'
+
+java {
+	sourceCompatibility = '21'
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	// IBKR TWS API
+	implementation 'com.interactivebrokers:tws-api:9.81.1'
+
+	// Spring Boot WebFlux
+	implementation 'org.springframework.boot:spring-boot-starter-webflux'
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
+	// Reactive
+	implementation 'io.projectreactor:reactor-core'
+	implementation 'io.projectreactor.netty:reactor-netty-core'
+
+	// Shared Models
+	implementation project(':shared-models')
+	implementation project(':api-java-webflux')
+
+	// Lombok
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
+
+	// Logging
+	implementation 'org.slf4j:slf4j-api'
+
+	// Testing
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'io.projectreactor:reactor-test'
+	testImplementation 'org.junit.jupiter:junit-jupiter'
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
+
+jar {
+	enabled = true
+	manifest {
+		attributes 'Implementation-Title': 'IBKR Integration',
+				'Implementation-Version': version
+	}
+}
