@@ -1,2 +1,19 @@
-*.jar
+# Build artifacts
 build/
+.gradle/
+
+# Allow Gradle wrapper JAR
+*.jar
+!gradle/wrapper/gradle-wrapper.jar
+
+# IDE
+.idea/
+*.iml
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
