@@ -306,9 +306,11 @@ class OptionsAnalyticsTest {
 
   @Test
   void testVrpCalculation() {
+    // Need at least 21 closes to get 20 log returns for HV20
     List<Double> closes = Arrays.asList(
         100.0, 101.0, 99.5, 100.5, 102.0, 101.5, 100.0, 99.0, 100.5, 101.0,
-        100.0, 98.5, 99.5, 100.5, 101.5, 100.0, 99.0, 100.0, 101.0, 102.0
+        100.0, 98.5, 99.5, 100.5, 101.5, 100.0, 99.0, 100.0, 101.0, 102.0,
+        101.5, 102.5
     );
 
     RealizedVolResult result = RealizedVolCalculator.calculateRealizedVol(
@@ -367,7 +369,7 @@ class OptionsAnalyticsTest {
         .spot(SPOT)
         .forwardPrice(SPOT)
         .daysToExpiry(DAYS_TO_EXPIRY)
-        .atmIv(BASE_IV)
+        .atTheMoneyImpliedVolatility(BASE_IV)
         .build();
 
     FlyResult result = IronFlyCalculator.calculateIronFly(testStrikes, context);
@@ -383,7 +385,7 @@ class OptionsAnalyticsTest {
         .spot(SPOT)
         .forwardPrice(SPOT)
         .daysToExpiry(DAYS_TO_EXPIRY)
-        .atmIv(BASE_IV)
+        .atTheMoneyImpliedVolatility(BASE_IV)
         .build();
 
     FlyResult result = IronFlyCalculator.calculateIronFly(testStrikes, context);
@@ -406,7 +408,7 @@ class OptionsAnalyticsTest {
         .spot(SPOT)
         .forwardPrice(SPOT)
         .daysToExpiry(DAYS_TO_EXPIRY)
-        .atmIv(BASE_IV)
+        .atTheMoneyImpliedVolatility(BASE_IV)
         .build();
 
     FlyResult result = IronFlyCalculator.calculateIronFly(testStrikes, context);
@@ -424,7 +426,7 @@ class OptionsAnalyticsTest {
         .spot(SPOT)
         .forwardPrice(SPOT)
         .daysToExpiry(DAYS_TO_EXPIRY)
-        .atmIv(BASE_IV)
+        .atTheMoneyImpliedVolatility(BASE_IV)
         .build();
 
     FlyResult result = IronFlyCalculator.calculateIronFly(testStrikes, context);
@@ -519,6 +521,6 @@ class OptionsAnalyticsTest {
     double ivAtm = 0.20;
 
     double bf25 = 0.5 * (iv25Call + iv25Put) - ivAtm;
-    assertEquals(0.135 - 0.20, bf25, 0.001);
+    assertEquals(0.035, bf25, 0.001);
   }
 }

@@ -107,7 +107,7 @@ public class IronFlyCalculator {
     private double spot;
     private double forwardPrice;
     private double daysToExpiry;
-    private double atmIv;
+    private double atTheMoneyImpliedVolatility;
 
     // Analytics results
     private GammaDeltaFlowCalculator.GexResult gexResult;
@@ -417,12 +417,13 @@ public class IronFlyCalculator {
    */
   private static Double calculateWingRichnessScore(FlyStructure structure,
                                                     FlyContext context) {
-    if (context.getVolSurface() == null || context.getVolSurface().getBf25() == null) {
+    if (context.getVolSurface() == null
+        || context.getVolSurface().getButterfly25Delta() == null) {
       return 50.0;
     }
 
-    // BF25 represents how rich wings are
-    double bf25 = context.getVolSurface().getBf25();
+    // Butterfly25Delta represents how rich wings are
+    double bf25 = context.getVolSurface().getButterfly25Delta();
 
     // Lower BF25 = cheaper wings = better for buying (higher score)
     // Scale: 0 BF25 = 100 score, 0.05 BF25 = 0 score
@@ -434,10 +435,10 @@ public class IronFlyCalculator {
    * T/M = Daily Theta / Expected Daily Move
    */
   private static Double calculateThetaToMove(FlyStructure structure, FlyContext context) {
-    if (structure.getNetTheta() == null || context.getAtmIv() <= 0) return null;
+    if (structure.getNetTheta() == null || context.getAtTheMoneyImpliedVolatility() <= 0) return null;
 
     double dailyTheta = Math.abs(structure.getNetTheta());
-    double expectedMove = context.getSpot() * context.getAtmIv() / Math.sqrt(252.0);
+    double expectedMove = context.getSpot() * context.getAtTheMoneyImpliedVolatility() / Math.sqrt(252.0);
 
     return dailyTheta / expectedMove;
   }
@@ -447,11 +448,11 @@ public class IronFlyCalculator {
    * Probability of touching breakeven before expiry.
    */
   private static Double calculateBepg(FlyStructure structure, FlyContext context) {
-    if (structure.getProfitZonePercent() == null || context.getAtmIv() <= 0) return null;
+    if (structure.getProfitZonePercent() == null || context.getAtTheMoneyImpliedVolatility() <= 0) return null;
 
     // Simplified: probability decreases with wider profit zone and lower IV
     double profitZone = structure.getProfitZonePercent() / 100.0;
-    double iv = context.getAtmIv();
+    double iv = context.getAtTheMoneyImpliedVolatility();
 
     // Approximation: BEPG = 1 - (profit zone / expected range)
     double expectedRange = iv * Math.sqrt(context.getDaysToExpiry() / 252.0);

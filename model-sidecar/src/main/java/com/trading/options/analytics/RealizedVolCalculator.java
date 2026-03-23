@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 /**
  * Realized vs Implied Volatility calculations per Options Edge spec.
  * - HV10, HV20 (close-to-close stdev * sqrt(252))
- * - VRP_ATM = IV_ATM² - HV20²
+ * - VRP_ATM = IV_ATM^2 - HV20^2
  * - Gap tape stats (median overnight gap, 90th pct)
  */
 public class RealizedVolCalculator {
@@ -36,7 +36,7 @@ public class RealizedVolCalculator {
     private Double realizedVolAnnual;
 
     // Volatility Risk Premium
-    private Double vrpAtm; // IV_ATM² - HV20²
+    private Double vrpAtm; // IV_ATM^2 - HV20^2
     private Double vrpRatio; // IV_ATM / HV20
 
     // Gap statistics

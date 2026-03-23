@@ -64,13 +64,13 @@ public class BlackScholes {
 
   /**
    * Calculate d1 parameter for Black-Scholes.
-   * d1 = (ln(S/K) + (r + σ²/2)T) / (σ√T)
+   * d1 = (ln(S/K) + (r + s?/2)T) / (s?T)
    *
    * @param underlyingSpotPrice Current price of the underlying asset (S)
    * @param strikePrice Option strike price (K)
    * @param riskFreeRate Risk-free interest rate (r)
    * @param timeToExpiry Time to expiration in years (T)
-   * @param volatility Implied volatility (σ)
+   * @param volatility Implied volatility (s)
    * @return The d1 parameter
    */
   public static double calculateD1(double underlyingSpotPrice, double strikePrice,
@@ -83,13 +83,13 @@ public class BlackScholes {
 
   /**
    * Calculate d2 parameter for Black-Scholes.
-   * d2 = d1 - σ√T
+   * d2 = d1 - s?T
    *
    * @param underlyingSpotPrice Current price of the underlying asset (S)
    * @param strikePrice Option strike price (K)
    * @param riskFreeRate Risk-free interest rate (r)
    * @param timeToExpiry Time to expiration in years (T)
-   * @param volatility Implied volatility (σ)
+   * @param volatility Implied volatility (s)
    * @return The d2 parameter
    */
   public static double calculateD2(double underlyingSpotPrice, double strikePrice,
@@ -105,7 +105,7 @@ public class BlackScholes {
    * @param strikePrice Option strike price (K)
    * @param riskFreeRate Risk-free interest rate (r)
    * @param timeToExpiry Time to expiration in years (T)
-   * @param volatility Implied volatility (σ)
+   * @param volatility Implied volatility (s)
    * @return The theoretical call option price
    */
   public static double calculateCallOptionPrice(double underlyingSpotPrice, double strikePrice,
@@ -135,7 +135,7 @@ public class BlackScholes {
    * @param strikePrice Option strike price (K)
    * @param riskFreeRate Risk-free interest rate (r)
    * @param timeToExpiry Time to expiration in years (T)
-   * @param volatility Implied volatility (σ)
+   * @param volatility Implied volatility (s)
    * @return The theoretical put option price
    */
   public static double calculatePutOptionPrice(double underlyingSpotPrice, double strikePrice,
@@ -166,7 +166,7 @@ public class BlackScholes {
    * @param strikePrice Option strike price (K)
    * @param riskFreeRate Risk-free interest rate (r)
    * @param timeToExpiry Time to expiration in years (T)
-   * @param volatility Implied volatility (σ)
+   * @param volatility Implied volatility (s)
    * @return The call option delta (between 0 and 1)
    */
   public static double calculateCallOptionDelta(double underlyingSpotPrice, double strikePrice,
@@ -187,7 +187,7 @@ public class BlackScholes {
    * @param strikePrice Option strike price (K)
    * @param riskFreeRate Risk-free interest rate (r)
    * @param timeToExpiry Time to expiration in years (T)
-   * @param volatility Implied volatility (σ)
+   * @param volatility Implied volatility (s)
    * @return The put option delta (between -1 and 0)
    */
   public static double calculatePutOptionDelta(double underlyingSpotPrice, double strikePrice,
@@ -209,7 +209,7 @@ public class BlackScholes {
    * @param strikePrice Option strike price (K)
    * @param riskFreeRate Risk-free interest rate (r)
    * @param timeToExpiry Time to expiration in years (T)
-   * @param volatility Implied volatility (σ)
+   * @param volatility Implied volatility (s)
    * @return The option gamma
    */
   public static double calculateGamma(double underlyingSpotPrice, double strikePrice,
@@ -230,7 +230,7 @@ public class BlackScholes {
    * @param strikePrice Option strike price (K)
    * @param riskFreeRate Risk-free interest rate (r)
    * @param timeToExpiry Time to expiration in years (T)
-   * @param volatility Implied volatility (σ)
+   * @param volatility Implied volatility (s)
    * @return The option vega (per 1% change in volatility)
    */
   public static double calculateVega(double underlyingSpotPrice, double strikePrice,
@@ -251,7 +251,7 @@ public class BlackScholes {
    * @param strikePrice Option strike price (K)
    * @param riskFreeRate Risk-free interest rate (r)
    * @param timeToExpiry Time to expiration in years (T)
-   * @param volatility Implied volatility (σ)
+   * @param volatility Implied volatility (s)
    * @return The call option theta (per day)
    */
   public static double calculateCallOptionTheta(double underlyingSpotPrice, double strikePrice,
@@ -281,7 +281,7 @@ public class BlackScholes {
    * @param strikePrice Option strike price (K)
    * @param riskFreeRate Risk-free interest rate (r)
    * @param timeToExpiry Time to expiration in years (T)
-   * @param volatility Implied volatility (σ)
+   * @param volatility Implied volatility (s)
    * @return The put option theta (per day)
    */
   public static double calculatePutOptionTheta(double underlyingSpotPrice, double strikePrice,

@@ -98,7 +98,7 @@ public class OptionsAnalyticsService {
         .spot(spot)
         .forwardPrice(spot) // Simplified
         .daysToExpiry(30) // Placeholder
-        .atmIv(volSurface.getAtTheMoneyImpliedVolatility() != null ? volSurface.getAtTheMoneyImpliedVolatility() : 0.2)
+        .atTheMoneyImpliedVolatility(volSurface.getAtTheMoneyImpliedVolatility() != null ? volSurface.getAtTheMoneyImpliedVolatility() : 0.2)
         .gexResult(gexResult)
         .oiResult(oiResult)
         .volSurface(volSurface)
