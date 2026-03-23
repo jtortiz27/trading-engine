@@ -88,7 +88,7 @@ public class OptionsAnalyticsService {
 
     // 4. Calculate Realized Vol
     RealizedVolResult realizedVol = RealizedVolCalculator.calculateRealizedVol(
-        priceHistory, volSurface.getAtmIv(), gaps);
+        priceHistory, volSurface.getAtTheMoneyImpliedVolatility(), gaps);
 
     // 5. Calculate Liquidity
     LiquidityResult liquidity = LiquidityCalculator.calculateLiquidity(strikes, spot);
@@ -98,7 +98,7 @@ public class OptionsAnalyticsService {
         .spot(spot)
         .forwardPrice(spot) // Simplified
         .daysToExpiry(30) // Placeholder
-        .atmIv(volSurface.getAtmIv() != null ? volSurface.getAtmIv() : 0.2)
+        .atmIv(volSurface.getAtTheMoneyImpliedVolatility() != null ? volSurface.getAtTheMoneyImpliedVolatility() : 0.2)
         .gexResult(gexResult)
         .oiResult(oiResult)
         .volSurface(volSurface)
@@ -144,10 +144,10 @@ public class OptionsAnalyticsService {
       if (gex.getNetAtmGammaTilt() > 0) bearishPoints++;
     }
 
-    // RR25
-    if (vol != null && vol.getRr25() != null) {
-      if (vol.getRr25() > 0.02) bullishPoints++;
-      if (vol.getRr25() < -0.02) bearishPoints++;
+    // Risk Reversal at 25 delta
+    if (vol != null && vol.getRiskReversal25Delta() != null) {
+      if (vol.getRiskReversal25Delta() > 0.02) bullishPoints++;
+      if (vol.getRiskReversal25Delta() < -0.02) bearishPoints++;
     }
 
     // Put/call ratio

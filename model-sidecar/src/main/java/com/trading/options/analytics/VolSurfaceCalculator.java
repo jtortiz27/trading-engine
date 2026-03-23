@@ -12,9 +12,9 @@ import lombok.NoArgsConstructor;
 
 /**
  * Volatility Surface Shape calculations per Options Edge spec.
- * - RR25 (Risk Reversal): IV(25d call) - IV(25d put)
- * - BF25 (Butterfly): 0.5*(IV(25d call)+IV(25d put)) - IV(ATM)
- * - Term slope: IV(~30D) - IV(~60D)
+ * - Risk Reversal (RR25): Implied Volatility at 25-delta call minus IV at 25-delta put
+ * - Butterfly (BF25): Average IV of 25-delta options minus ATM IV
+ * - Term slope: IV difference between short and long dated options
  * - Wing-richness z-score
  */
 public class VolSurfaceCalculator {
@@ -27,36 +27,36 @@ public class VolSurfaceCalculator {
   @NoArgsConstructor
   @AllArgsConstructor
   public static class VolSurfaceResult {
-    // Risk Reversal metrics
-    private Double rr25; // IV(25d call) - IV(25d put)
-    private Double rr10; // IV(10d call) - IV(10d put)
+    // Risk Reversal metrics - measures directional sentiment via skew difference
+    private Double riskReversal25Delta; // IV(25d call) - IV(25d put)
+    private Double riskReversal10Delta; // IV(10d call) - IV(10d put)
 
-    // Butterfly metrics
-    private Double bf25; // 0.5*(IV(25d call)+IV(25d put)) - IV(ATM)
-    private Double bf10; // 0.5*(IV(10d call)+IV(10d put)) - IV(ATM)
+    // Butterfly metrics - measures wing richness (kurtosis of vol surface)
+    private Double butterfly25Delta; // 0.5*(IV(25d call)+IV(25d put)) - IV(ATM)
+    private Double butterfly10Delta; // 0.5*(IV(10d call)+IV(10d put)) - IV(ATM)
 
-    // Term structure
-    private Double termSlope30_60; // IV(~30D) - IV(~60D)
-    private Double termSlope7_30; // IV(~7D) - IV(~30D)
+    // Term structure - how IV varies across expiration dates
+    private Double termStructureSlope30to60Days; // IV(~30D) - IV(~60D)
+    private Double termStructureSlope7to30Days; // IV(~7D) - IV(~30D)
 
-    // ATM IV
-    private Double atmIv;
-    private Double atmStrike;
+    // At-the-money IV
+    private Double atTheMoneyImpliedVolatility;
+    private Double atTheMoneyStrikePrice;
 
-    // Wing richness
+    // Wing richness - how expensive wings are vs historical
     private Double wingRichnessZscore;
     private Double wingRichnessPercentile;
 
-    // Skew metrics
+    // Skew metrics - asymmetry between put and call implied volatility
     private Double putSkew; // IV(25d put) - IV(ATM)
     private Double callSkew; // IV(25d call) - IV(ATM)
-    private Double skewRatio; // putSkew / callSkew
+    private Double putToCallSkewRatio; // putSkew / callSkew
 
     // IV by delta
-    private Map<String, Double> ivByDelta;
+    private Map<String, Double> impliedVolatilityByDelta;
 
     // Surface fit quality
-    private Double surfaceFitR2;
+    private Double surfaceFitRSquared;
   }
 
   /**
@@ -69,7 +69,7 @@ public class VolSurfaceCalculator {
   public static class VolPoint {
     private Double strike;
     private Double delta;
-    private Double iv;
+    private Double impliedVolatility;
     private Double daysToExpiry;
     private Boolean isCall;
   }
@@ -82,8 +82,8 @@ public class VolSurfaceCalculator {
   @NoArgsConstructor
   @AllArgsConstructor
   public static class HistoricalVolData {
-    private Double avgWingRichness; // Historical average
-    private Double stdDevWingRichness; // Historical std dev
+    private Double averageWingRichness; // Historical average
+    private Double standardDeviationWingRichness; // Historical std dev
     private List<Double> wingRichnessHistory; // Last N observations
   }
 
@@ -105,83 +105,88 @@ public class VolSurfaceCalculator {
     }
 
     // Find ATM IV
-    Double atmIv = findAtmIv(volPoints, atmStrike);
+    Double atTheMoneyImpliedVolatility = findAtTheMoneyImpliedVolatility(volPoints, atmStrike);
 
     // Find IV by delta
-    Double iv25Call = findIvByDelta(volPoints, 0.25, true);
-    Double iv25Put = findIvByDelta(volPoints, -0.25, false);
-    Double iv10Call = findIvByDelta(volPoints, 0.10, true);
-    Double iv10Put = findIvByDelta(volPoints, -0.10, false);
+    Double impliedVolatility25DeltaCall = findImpliedVolatilityByDelta(volPoints, 0.25, true);
+    Double impliedVolatility25DeltaPut = findImpliedVolatilityByDelta(volPoints, -0.25, false);
+    Double impliedVolatility10DeltaCall = findImpliedVolatilityByDelta(volPoints, 0.10, true);
+    Double impliedVolatility10DeltaPut = findImpliedVolatilityByDelta(volPoints, -0.10, false);
 
-    // Calculate RR25
-    Double rr25 = null;
-    if (iv25Call != null && iv25Put != null) {
-      rr25 = iv25Call - iv25Put;
+    // Calculate Risk Reversal at 25 delta
+    Double riskReversal25Delta = null;
+    if (impliedVolatility25DeltaCall != null && impliedVolatility25DeltaPut != null) {
+      riskReversal25Delta = impliedVolatility25DeltaCall - impliedVolatility25DeltaPut;
     }
 
-    // Calculate RR10
-    Double rr10 = null;
-    if (iv10Call != null && iv10Put != null) {
-      rr10 = iv10Call - iv10Put;
+    // Calculate Risk Reversal at 10 delta
+    Double riskReversal10Delta = null;
+    if (impliedVolatility10DeltaCall != null && impliedVolatility10DeltaPut != null) {
+      riskReversal10Delta = impliedVolatility10DeltaCall - impliedVolatility10DeltaPut;
     }
 
-    // Calculate BF25
-    Double bf25 = null;
-    if (iv25Call != null && iv25Put != null && atmIv != null) {
-      bf25 = 0.5 * (iv25Call + iv25Put) - atmIv;
+    // Calculate Butterfly at 25 delta
+    Double butterfly25Delta = null;
+    if (impliedVolatility25DeltaCall != null && impliedVolatility25DeltaPut != null
+        && atTheMoneyImpliedVolatility != null) {
+      butterfly25Delta = 0.5 * (impliedVolatility25DeltaCall + impliedVolatility25DeltaPut)
+          - atTheMoneyImpliedVolatility;
     }
 
-    // Calculate BF10
-    Double bf10 = null;
-    if (iv10Call != null && iv10Put != null && atmIv != null) {
-      bf10 = 0.5 * (iv10Call + iv10Put) - atmIv;
+    // Calculate Butterfly at 10 delta
+    Double butterfly10Delta = null;
+    if (impliedVolatility10DeltaCall != null && impliedVolatility10DeltaPut != null
+        && atTheMoneyImpliedVolatility != null) {
+      butterfly10Delta = 0.5 * (impliedVolatility10DeltaCall + impliedVolatility10DeltaPut)
+          - atTheMoneyImpliedVolatility;
     }
 
     // Calculate skew
     Double putSkew = null;
-    if (iv25Put != null && atmIv != null) {
-      putSkew = iv25Put - atmIv;
+    if (impliedVolatility25DeltaPut != null && atTheMoneyImpliedVolatility != null) {
+      putSkew = impliedVolatility25DeltaPut - atTheMoneyImpliedVolatility;
     }
 
     Double callSkew = null;
-    if (iv25Call != null && atmIv != null) {
-      callSkew = iv25Call - atmIv;
+    if (impliedVolatility25DeltaCall != null && atTheMoneyImpliedVolatility != null) {
+      callSkew = impliedVolatility25DeltaCall - atTheMoneyImpliedVolatility;
     }
 
-    Double skewRatio = null;
+    Double putToCallSkewRatio = null;
     if (putSkew != null && callSkew != null && callSkew != 0) {
-      skewRatio = putSkew / callSkew;
+      putToCallSkewRatio = putSkew / callSkew;
     }
 
     // Calculate wing richness z-score
     Double wingRichnessZscore = null;
     Double wingRichnessPercentile = null;
-    if (bf25 != null && historicalVols != null) {
-      wingRichnessZscore = calculateWingRichnessZscore(bf25, historicalVols);
-      wingRichnessPercentile = calculatePercentile(bf25, historicalVols.getWingRichnessHistory());
+    if (butterfly25Delta != null && historicalVols != null) {
+      wingRichnessZscore = calculateWingRichnessZscore(butterfly25Delta, historicalVols);
+      wingRichnessPercentile = calculatePercentile(
+          butterfly25Delta, historicalVols.getWingRichnessHistory());
     }
 
     // Build IV by delta map
-    Map<String, Double> ivByDelta = new HashMap<>();
-    ivByDelta.put("atm", atmIv);
-    ivByDelta.put("25Call", iv25Call);
-    ivByDelta.put("25Put", iv25Put);
-    ivByDelta.put("10Call", iv10Call);
-    ivByDelta.put("10Put", iv10Put);
+    Map<String, Double> impliedVolatilityByDelta = new HashMap<>();
+    impliedVolatilityByDelta.put("atm", atTheMoneyImpliedVolatility);
+    impliedVolatilityByDelta.put("25Call", impliedVolatility25DeltaCall);
+    impliedVolatilityByDelta.put("25Put", impliedVolatility25DeltaPut);
+    impliedVolatilityByDelta.put("10Call", impliedVolatility10DeltaCall);
+    impliedVolatilityByDelta.put("10Put", impliedVolatility10DeltaPut);
 
     return VolSurfaceResult.builder()
-        .rr25(rr25)
-        .rr10(rr10)
-        .bf25(bf25)
-        .bf10(bf10)
-        .atmIv(atmIv)
-        .atmStrike(atmStrike)
+        .riskReversal25Delta(riskReversal25Delta)
+        .riskReversal10Delta(riskReversal10Delta)
+        .butterfly25Delta(butterfly25Delta)
+        .butterfly10Delta(butterfly10Delta)
+        .atTheMoneyImpliedVolatility(atTheMoneyImpliedVolatility)
+        .atTheMoneyStrikePrice(atmStrike)
         .putSkew(putSkew)
         .callSkew(callSkew)
-        .skewRatio(skewRatio)
+        .putToCallSkewRatio(putToCallSkewRatio)
         .wingRichnessZscore(wingRichnessZscore)
         .wingRichnessPercentile(wingRichnessPercentile)
-        .ivByDelta(ivByDelta)
+        .impliedVolatilityByDelta(impliedVolatilityByDelta)
         .build();
   }
 
@@ -199,107 +204,115 @@ public class VolSurfaceCalculator {
     // Sort by DTE (approximate from context)
     List<VolSurfaceResult> sorted = new ArrayList<>(volSurfaces);
 
-    Double iv30 = null;
-    Double iv60 = null;
-    Double iv7 = null;
+    Double impliedVolatility30Days = null;
+    Double impliedVolatility60Days = null;
+    Double impliedVolatility7Days = null;
 
     // Find closest to target DTE (simplified)
-    for (VolSurfaceResult vs : sorted) {
-      if (iv30 == null && vs.getAtmIv() != null) {
-        iv30 = vs.getAtmIv(); // Assume first is ~30D
-      } else if (iv60 == null && vs.getAtmIv() != null) {
-        iv60 = vs.getAtmIv(); // Assume second is ~60D
+    for (VolSurfaceResult volSurface : sorted) {
+      if (impliedVolatility30Days == null && volSurface.getAtTheMoneyImpliedVolatility() != null) {
+        impliedVolatility30Days = volSurface.getAtTheMoneyImpliedVolatility(); // Assume first is ~30D
+      } else if (impliedVolatility60Days == null
+          && volSurface.getAtTheMoneyImpliedVolatility() != null) {
+        impliedVolatility60Days = volSurface.getAtTheMoneyImpliedVolatility(); // Assume second is ~60D
       }
     }
 
-    Double termSlope30_60 = null;
-    if (iv30 != null && iv60 != null) {
-      termSlope30_60 = iv30 - iv60;
+    Double termStructureSlope30to60Days = null;
+    if (impliedVolatility30Days != null && impliedVolatility60Days != null) {
+      termStructureSlope30to60Days = impliedVolatility30Days - impliedVolatility60Days;
     }
 
-    Double termSlope7_30 = null;
-    if (iv7 != null && iv30 != null) {
-      termSlope7_30 = iv7 - iv30;
+    Double termStructureSlope7to30Days = null;
+    if (impliedVolatility7Days != null && impliedVolatility30Days != null) {
+      termStructureSlope7to30Days = impliedVolatility7Days - impliedVolatility30Days;
     }
 
     return VolSurfaceResult.builder()
-        .termSlope30_60(termSlope30_60)
-        .termSlope7_30(termSlope7_30)
+        .termStructureSlope30to60Days(termStructureSlope30to60Days)
+        .termStructureSlope7to30Days(termStructureSlope7to30Days)
         .build();
   }
 
   /**
    * Find ATM IV from vol points.
    */
-  private static Double findAtmIv(List<VolPoint> volPoints, Double atmStrike) {
-    if (atmStrike == null) return null;
+  private static Double findAtTheMoneyImpliedVolatility(
+      List<VolPoint> volPoints, Double atTheMoneyStrike) {
+    if (atTheMoneyStrike == null) {
+      return null;
+    }
 
     // Find closest to ATM strike
     VolPoint closest = null;
     double minDiff = Double.MAX_VALUE;
 
-    for (VolPoint vp : volPoints) {
-      if (vp.getStrike() != null && vp.getIv() != null) {
-        double diff = Math.abs(vp.getStrike() - atmStrike);
+    for (VolPoint point : volPoints) {
+      if (point.getStrike() != null && point.getImpliedVolatility() != null) {
+        double diff = Math.abs(point.getStrike() - atTheMoneyStrike);
         if (diff < minDiff) {
           minDiff = diff;
-          closest = vp;
+          closest = point;
         }
       }
     }
 
-    return closest != null ? closest.getIv() : null;
+    return closest != null ? closest.getImpliedVolatility() : null;
   }
 
   /**
    * Find IV for a specific delta.
    */
-  private static Double findIvByDelta(List<VolPoint> volPoints, double targetDelta,
-                                      boolean isCall) {
+  private static Double findImpliedVolatilityByDelta(
+      List<VolPoint> volPoints, double targetDelta, boolean isCall) {
     VolPoint closest = null;
     double minDiff = Double.MAX_VALUE;
 
-    for (VolPoint vp : volPoints) {
-      if (vp.getDelta() != null && vp.getIv() != null
-          && vp.getIsCall() != null && vp.getIsCall() == isCall) {
-        double diff = Math.abs(Math.abs(vp.getDelta()) - Math.abs(targetDelta));
+    for (VolPoint point : volPoints) {
+      if (point.getDelta() != null && point.getImpliedVolatility() != null
+          && point.getIsCall() != null && point.getIsCall() == isCall) {
+        double diff = Math.abs(Math.abs(point.getDelta()) - Math.abs(targetDelta));
         if (diff < minDiff) {
           minDiff = diff;
-          closest = vp;
+          closest = point;
         }
       }
     }
 
-    return closest != null ? closest.getIv() : null;
+    return closest != null ? closest.getImpliedVolatility() : null;
   }
 
   /**
    * Calculate wing richness z-score.
    */
-  private static Double calculateWingRichnessZscore(double currentBf25,
-                                                     HistoricalVolData historicalVols) {
-    if (historicalVols == null || historicalVols.getAvgWingRichness() == null
-        || historicalVols.getStdDevWingRichness() == null) {
+  private static Double calculateWingRichnessZscore(
+      double currentButterfly25Delta, HistoricalVolData historicalVols) {
+    if (historicalVols == null || historicalVols.getAverageWingRichness() == null
+        || historicalVols.getStandardDeviationWingRichness() == null) {
       return null;
     }
 
-    double avg = historicalVols.getAvgWingRichness();
-    double stdDev = historicalVols.getStdDevWingRichness();
+    double average = historicalVols.getAverageWingRichness();
+    double standardDeviation = historicalVols.getStandardDeviationWingRichness();
 
-    if (stdDev <= 0) return 0.0;
+    if (standardDeviation <= 0) {
+      return 0.0;
+    }
 
-    return (currentBf25 - avg) / stdDev;
+    return (currentButterfly25Delta - average) / standardDeviation;
   }
 
   /**
    * Calculate percentile of current value in historical distribution.
    */
   private static Double calculatePercentile(double currentValue, List<Double> history) {
-    if (history == null || history.isEmpty()) return null;
+    if (history == null || history.isEmpty()) {
+      return null;
+    }
 
     int count = 0;
-    for (Double h : history) {
-      if (h != null && h <= currentValue) {
+    for (Double historicalValue : history) {
+      if (historicalValue != null && historicalValue <= currentValue) {
         count++;
       }
     }
@@ -309,13 +322,19 @@ public class VolSurfaceCalculator {
 
   /**
    * Interpret volatility skew direction.
-   * Positive RR25 = call skew (bullish sentiment)
-   * Negative RR25 = put skew (bearish sentiment)
+   * Positive riskReversal25Delta = call skew (bullish sentiment)
+   * Negative riskReversal25Delta = put skew (bearish sentiment)
    */
-  public static String getSkewSentiment(Double rr25) {
-    if (rr25 == null) return "NEUTRAL";
-    if (rr25 > 0.02) return "BULLISH";
-    if (rr25 < -0.02) return "BEARISH";
+  public static String getSkewSentiment(Double riskReversal25Delta) {
+    if (riskReversal25Delta == null) {
+      return "NEUTRAL";
+    }
+    if (riskReversal25Delta > 0.02) {
+      return "BULLISH";
+    }
+    if (riskReversal25Delta < -0.02) {
+      return "BEARISH";
+    }
     return "NEUTRAL";
   }
 
@@ -324,10 +343,16 @@ public class VolSurfaceCalculator {
    * Positive slope = contango (normal)
    * Negative slope = backwardation (elevated near-term fear)
    */
-  public static String getTermStructureShape(Double termSlope30_60) {
-    if (termSlope30_60 == null) return "FLAT";
-    if (termSlope30_60 > 0.01) return "CONTANGO";
-    if (termSlope30_60 < -0.01) return "BACKWARDATION";
+  public static String getTermStructureShape(Double termStructureSlope30to60Days) {
+    if (termStructureSlope30to60Days == null) {
+      return "FLAT";
+    }
+    if (termStructureSlope30to60Days > 0.01) {
+      return "CONTANGO";
+    }
+    if (termStructureSlope30to60Days < -0.01) {
+      return "BACKWARDATION";
+    }
     return "FLAT";
   }
 }
