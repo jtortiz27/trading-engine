@@ -5,7 +5,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @Slf4j
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = {"com.trading", "com.trading.ibkr"})
 public class TradingWebfluxApplication {
   public static void main(String... args) {
     log.info("Staring Application: {}", TradingWebfluxApplication.class.getSimpleName());

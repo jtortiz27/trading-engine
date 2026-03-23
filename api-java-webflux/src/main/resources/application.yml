@@ -3,8 +3,10 @@ spring:
     mongodb:
       uri: mongodb://localhost:27017
       database: testDB
+
 model-server:
   url: http://localhost:8081
+
 polygon:
   api:
     baseUrl: https://api.polygon.io/v3
@@ -12,3 +14,17 @@ polygon:
     indexUrl: /indices
     key: g2jyPjqU2CXRzmdEtLxT864ZCza2FHku
     token: kv5HpUlctjaUWiFTjEalkh_pi3GCJaJS
+
+# IBKR Configuration
+ibkr:
+  host: localhost
+  port: 7497          # 7497 = paper, 7496 = live
+  client-id: 1
+  mode: PAPER
+  connection-timeout-seconds: 30
+  market-data-timeout-seconds: 10
+  options-chain-timeout-seconds: 30
+  order-timeout-seconds: 10
+  auto-reconnect: true
+  reconnect-delay-seconds: 5
+  max-reconnect-attempts: 0

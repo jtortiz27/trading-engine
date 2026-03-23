@@ -1,0 +1,46 @@
+# IBKR Integration Configuration
+# Add this to your main application.yml or import this file
+
+ibkr:
+  # Gateway connection settings
+  host: localhost
+  port: 7497          # 7497 = paper trading, 7496 = live trading
+  client-id: 1
+  mode: PAPER         # PAPER or LIVE
+
+  # Timeouts (seconds)
+  connection-timeout-seconds: 30
+  market-data-timeout-seconds: 10
+  options-chain-timeout-seconds: 30
+  order-timeout-seconds: 10
+
+  # Reconnection settings
+  auto-reconnect: true
+  reconnect-delay-seconds: 5
+  max-reconnect-attempts: 0    # 0 = unlimited
+
+  # Connection pooling
+  max-pending-requests: 100
+
+---
+# Live trading configuration (override in production)
+spring:
+  config:
+    activate:
+      on-profile: ibkr-live
+
+ibkr:
+  port: 7496
+  mode: LIVE
+
+---
+# Development configuration with stub fallback
+spring:
+  config:
+    activate:
+      on-profile: ibkr-dev
+
+ibkr:
+  port: 7497
+  mode: PAPER
+  auto-reconnect: false
