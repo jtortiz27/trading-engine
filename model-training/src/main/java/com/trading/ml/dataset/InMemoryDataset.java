@@ -26,7 +26,7 @@ public class InMemoryDataset extends ArrayDataset {
     return inputs.stream()
         .map(
             input -> {
-              float[] featureVec = new float[] {(float) input.getPriceChange()
+              float[] featureVec = new float[] {(float) (input.getPriceChange1Min() != null ? input.getPriceChange1Min() : 0.0)
                     // Extend with more normalized features if needed
                   };
               return manager.create(featureVec);
@@ -39,10 +39,13 @@ public class InMemoryDataset extends ArrayDataset {
         .map(
             label -> {
               float[] encoded = new float[3];
-              switch (label.getLabel()) {
-                case "BUY" -> encoded[0] = 1f;
-                case "SELL" -> encoded[1] = 1f;
-                default -> encoded[2] = 1f;
+              String labelText = label.getLabel();
+              if ("BUY".equals(labelText)) {
+                encoded[0] = 1f;
+              } else if ("SELL".equals(labelText)) {
+                encoded[1] = 1f;
+              } else {
+                encoded[2] = 1f;
               }
               return manager.create(encoded);
             })

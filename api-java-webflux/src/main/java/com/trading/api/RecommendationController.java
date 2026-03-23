@@ -56,7 +56,7 @@ public class RecommendationController {
    *
    * <p>Error handling:
    * <ul>
-   *   <li>Model-sidecar unavailable → 503 Service Unavailable</li>
+   *   <li>Model-sidecar unavailable -> 503 Service Unavailable</li>
    *   <li>IBKR stub can return mock errors for testing (controlled by parameter)</li>
    * </ul>
    *
@@ -106,9 +106,8 @@ public class RecommendationController {
   private Mono<TradeRecommendation> callModelSidecar(String symbol) {
     // Create minimal StockFeatures for the stub call
     // In production, this would include full feature set
-    StockFeatures features = StockFeatures.builder()
-        .symbol(symbol)
-        .build();
+    StockFeatures features = new StockFeatures();
+    features.setSymbol(symbol);
 
     WebClient modelClient = webClientBuilder
         .baseUrl(modelSidecarUrl)

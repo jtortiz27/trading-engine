@@ -36,18 +36,24 @@ public class TradeService {
 
         //Determine Macro Tier
         Mono<Macro> macroTierMono =  stockMarketIntegrationService.retrieveIndexSnapshot("I:VIX")
-                .map(vixSnapshot -> vixSnapshot.getResults().getFirst().getValue())
+                .map(vixSnapshot -> vixSnapshot.getResults().get(0).getValue())
                 .map(vixValue -> {
                     if (vixValue < 16) return 0;
                     else if (vixValue < 22) return 1;
                     else if (vixValue < 35) return 2;
                     else return 3;
                 })
-                .map(tier -> switch (tier) {
-                    case 0 -> CALM;
-                    case 1 -> ELEV;
-                    case 2 -> RISK_OFF;
-                    case null, default -> CHAOS;
+                .map(tier -> {
+                    switch (tier) {
+                        case 0:
+                            return CALM;
+                        case 1:
+                            return ELEV;
+                        case 2:
+                            return RISK_OFF;
+                        default:
+                            return CHAOS;
+                    }
                 });
 
         //Determine Volume Strength
@@ -93,7 +99,7 @@ public class TradeService {
                             
                             //Volume Dashboard
                             Double impliedVolatility = contractSnapshotResource.getResults().getImpliedVolatility();
-                            Double historicalVolatility = determineHistoricalVolatility(aggregateBarsResource).getLast();
+                            Double historicalVolatility = determineHistoricalVolatility(aggregateBarsResource).get(determineHistoricalVolatility(aggregateBarsResource).size() - 1);
 
                             //Momentum + Trends
                             tickerSummaryResource.setTimestamp(Instant.now());
@@ -101,7 +107,7 @@ public class TradeService {
                             tickerSummaryResource.setHistoricalVolatility30Day(historicalVolatility);
                             tickerSummaryResource.setImpliedVolatilityHistoricalVolatilityRatio(impliedVolatility/historicalVolatility);
 
-                            Long macdValue = macdResource.getResults().getValues().getFirst().getValue();
+                            Long macdValue = macdResource.getResults().getValues().get(0).getValue();
 
                             //Condor Score
                             Double midPoint = aggregateBarsResource.getResults()

@@ -11,38 +11,38 @@ import lombok.NoArgsConstructor;
 public class StockFeatures {
   private String symbol;
 
-  // 📈 Trend
+  // Trend
   private Double ema5;
   private Double ema10;
   private Double ema20;
   private Double macd;
   private Double macdSignal;
 
-  // 📉 Volatility
+  // Volatility
   private Double bollingerUpper;
   private Double bollingerLower;
   private Double atr;
 
-  // ⚡ Momentum
+  // Momentum
   private Double rsi;
   private Double priceChange1Min;
   private Double priceChange5Min;
 
-  // 🔊 Volume
+  // Volume
   private Double currentVolume;
   private Double volumeSma10;
   private Double volumeDelta;
 
-  // 🧠 Sentiment
+  // Sentiment
   private Double sentimentScore;
   private Integer headlineCountPast5Min;
 
-  // ⏱️ Time context
+  // Time context
   private Integer minutesSinceOpen;
   private Integer minutesUntilClose;
   private Integer dayOfWeek;
 
-  // 🏷️ Label for training
+  // Label for training
   private String label; // "BUY", "SELL", "HOLD"
   private Instant timestamp;
 }
