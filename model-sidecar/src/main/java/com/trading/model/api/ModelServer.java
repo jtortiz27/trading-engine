@@ -7,7 +7,7 @@ import ai.djl.repository.zoo.ModelZoo;
 import ai.djl.repository.zoo.ZooModel;
 import com.trading.model.StockFeatures;
 import com.trading.model.TradeRecommendation;
-import jakarta.annotation.PostConstruct;
+import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.nio.file.Paths;
 import lombok.SneakyThrows;

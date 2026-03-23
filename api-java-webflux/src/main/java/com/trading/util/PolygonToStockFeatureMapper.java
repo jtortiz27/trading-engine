@@ -31,11 +31,18 @@ public class PolygonToStockFeatureMapper {
     }
 
     public static Double mapSentiment(String sentiment) {
-        return switch (sentiment.toLowerCase()) {
-            case "positive" -> 0.75;
-            case "neutral"  -> 0.0;
-            case "negative" -> -0.75;
-            default         -> null;
-        };
+        if (sentiment == null) {
+            return null;
+        }
+        String lower = sentiment.toLowerCase();
+        if ("positive".equals(lower)) {
+            return 0.75;
+        } else if ("neutral".equals(lower)) {
+            return 0.0;
+        } else if ("negative".equals(lower)) {
+            return -0.75;
+        } else {
+            return null;
+        }
     }
 }
