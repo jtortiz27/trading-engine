@@ -24,7 +24,7 @@ dependencies {
     implementation 'io.projectreactor:reactor-core'
     
     // IBKR TWS API
-    implementation 'com.interactivebrokers:tws-api:9.81.1'
+    implementation 'com.interactivebrokers:tws-api:9.81.0'
     
     implementation project(':shared-models')
     

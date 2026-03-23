@@ -378,6 +378,15 @@ public class IbkrWrapper implements EWrapper {
     public void positionMultiEnd(int reqId) {}
 
     @Override
+    public void softDollarTiers(int reqId, com.ib.client.SoftDollarTier[] tiers) {}
+
+    @Override
+    public void familyCodes(com.ib.client.FamilyCode[] familyCodes) {}
+
+    @Override
+    public void symbolSamples(int reqId, com.ib.client.ContractDescription[] contractDescriptions) {}
+
+    @Override
     public void accountUpdateMulti(int reqId, String account, String modelCode, String key, String value,
                                    String currency) {}
 

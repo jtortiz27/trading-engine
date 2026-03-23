@@ -1,23 +1,23 @@
 plugins {
 	id 'java'
-	id 'org.springframework.boot' apply false
-	id 'io.spring.dependency-management'
 }
+
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
 
 group = 'com.trading'
 version = '1.0.0'
 
-java {
-	sourceCompatibility = '21'
-}
+sourceCompatibility = '21'
+targetCompatibility = '21'
 
 repositories {
 	mavenCentral()
 }
 
 dependencies {
-	// IBKR TWS API
-	implementation 'com.interactivebrokers:tws-api:9.81.1'
+	// IBKR TWS API - using local library
+	implementation files('../ibkr-client/src/libs/TwsApi.jar')
 
 	// Spring Boot WebFlux
 	implementation 'org.springframework.boot:spring-boot-starter-webflux'
@@ -29,14 +29,19 @@ dependencies {
 
 	// Shared Models
 	implementation project(':shared-models')
-	implementation project(':api-java-webflux')
 
 	// Lombok
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
+	testCompileOnly 'org.projectlombok:lombok'
+	testAnnotationProcessor 'org.projectlombok:lombok'
 
 	// Logging
 	implementation 'org.slf4j:slf4j-api'
+
+	// Jakarta annotations
+	compileOnly 'jakarta.annotation:jakarta.annotation-api:2.1.1'
+	annotationProcessor 'jakarta.annotation:jakarta.annotation-api:2.1.1'
 
 	// Testing
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'

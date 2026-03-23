@@ -6,6 +6,16 @@ allprojects {
     repositories {
         mavenCentral()
     }
+
+    buildscript {
+        repositories {
+            mavenCentral()
+            gradlePluginPortal()
+        }
+        dependencies {
+            classpath 'org.springframework.boot:spring-boot-gradle-plugin:2.7.18'
+        }
+    }
 }
 
 subprojects {
@@ -13,8 +23,8 @@ subprojects {
 
     group = 'com.trading'
     version = '1.0.0'
-    sourceCompatibility = '11'
-    targetCompatibility = '11'
+    sourceCompatibility = '21'
+    targetCompatibility = '21'
 
     repositories {
         mavenCentral()

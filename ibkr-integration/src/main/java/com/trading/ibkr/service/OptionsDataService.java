@@ -1,7 +1,7 @@
 package com.trading.ibkr.service;
 
-import com.trading.api.resource.marketdata.OptionContract;
-import com.trading.api.resource.marketdata.OptionsChain;
+import com.trading.model.marketdata.OptionContract;
+import com.trading.model.marketdata.OptionsChain;
 import com.trading.client.IbkrMarketDataClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -1,7 +1,7 @@
 package com.trading.ibkr;
 
-import com.trading.api.resource.marketdata.MarketData;
-import com.trading.api.resource.marketdata.OptionsChain;
+import com.trading.model.marketdata.MarketData;
+import com.trading.model.marketdata.OptionsChain;
 import com.trading.ibkr.client.IbkrConnectionManager;
 import com.trading.ibkr.service.MarketDataService;
 import com.trading.ibkr.service.OptionsDataService;

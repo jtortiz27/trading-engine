@@ -1,7 +1,7 @@
 package com.trading.client;
 
-import com.trading.api.resource.marketdata.MarketData;
-import com.trading.api.resource.marketdata.OptionsChain;
+import com.trading.model.marketdata.MarketData;
+import com.trading.model.marketdata.OptionsChain;
 import reactor.core.publisher.Mono;
 
 /**

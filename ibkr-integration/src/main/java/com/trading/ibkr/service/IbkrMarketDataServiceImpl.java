@@ -2,10 +2,10 @@ package com.trading.ibkr.service;
 
 import com.ib.client.Contract;
 import com.ib.client.TickType;
-import com.trading.api.resource.marketdata.MarketData;
-import com.trading.api.resource.marketdata.OptionsChain;
-import com.trading.api.resource.marketdata.OptionContract;
-import com.trading.client.IbkrMarketDataClient;
+import com.trading.model.marketdata.MarketData;
+import com.trading.model.marketdata.OptionsChain;
+import com.trading.model.marketdata.OptionContract;
+import com.trading.model.marketdata.IbkrMarketDataClient;
 import com.trading.ibkr.client.IbkrConnectionManager;
 import com.trading.ibkr.client.IbkrWrapper;
 import com.trading.ibkr.config.IbkrProperties;

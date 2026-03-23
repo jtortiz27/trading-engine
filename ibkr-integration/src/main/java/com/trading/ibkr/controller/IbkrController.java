@@ -1,7 +1,7 @@
 package com.trading.ibkr.controller;
 
-import com.trading.api.resource.marketdata.MarketData;
-import com.trading.api.resource.marketdata.OptionsChain;
+import com.trading.model.marketdata.MarketData;
+import com.trading.model.marketdata.OptionsChain;
 import com.trading.ibkr.service.IbkrMarketDataServiceImpl.OrderRequest;
 import com.trading.ibkr.service.IbkrMarketDataServiceImpl.OrderStatus;
 import com.trading.ibkr.service.MarketDataService;

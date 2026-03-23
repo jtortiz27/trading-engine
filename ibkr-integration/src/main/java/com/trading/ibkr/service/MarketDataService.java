@@ -1,6 +1,6 @@
 package com.trading.ibkr.service;
 
-import com.trading.api.resource.marketdata.MarketData;
+import com.trading.model.marketdata.MarketData;
 import com.trading.client.IbkrMarketDataClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
