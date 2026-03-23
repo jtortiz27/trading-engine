@@ -220,7 +220,7 @@ public class OptionsAnalyticsService {
         points.add(VolSurfaceCalculator.VolPoint.builder()
             .strike(strike.getStrike())
             .delta(strike.getCallDelta())
-            .iv(strike.getCallIv())
+            .impliedVolatility(strike.getCallIv())
             .isCall(true)
             .build());
       }
@@ -230,7 +230,7 @@ public class OptionsAnalyticsService {
         points.add(VolSurfaceCalculator.VolPoint.builder()
             .strike(strike.getStrike())
             .delta(strike.getPutDelta())
-            .iv(strike.getPutIv())
+            .impliedVolatility(strike.getPutIv())
             .isCall(false)
             .build());
       }

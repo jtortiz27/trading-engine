@@ -119,7 +119,7 @@ class OptionsAnalyticsTest {
 
   @Test
   void testBlackScholesCallPrice() {
-    double price = BlackScholes.callPrice(100, 100, 0.05, 1.0, 0.2);
+    double price = BlackScholes.calculateCallOptionPrice(100, 100, 0.05, 1.0, 0.2);
     assertTrue(price > 0);
     assertTrue(price < 20); // ATM call should be reasonable
   }
@@ -127,8 +127,8 @@ class OptionsAnalyticsTest {
   @Test
   void testBlackScholesPutCallParity() {
     double S = 100, K = 100, r = 0.05, T = 1.0, sigma = 0.2;
-    double call = BlackScholes.callPrice(S, K, r, T, sigma);
-    double put = BlackScholes.putPrice(S, K, r, T, sigma);
+    double call = BlackScholes.calculateCallOptionPrice(S, K, r, T, sigma);
+    double put = BlackScholes.calculatePutOptionPrice(S, K, r, T, sigma);
     double parity = call - put - S + K * Math.exp(-r * T);
     assertEquals(0, parity, 0.01);
   }
@@ -136,9 +136,9 @@ class OptionsAnalyticsTest {
   @Test
   void testImpliedVolatility() {
     double S = 100, K = 100, r = 0.05, T = 1.0, sigma = 0.2;
-    double marketPrice = BlackScholes.callPrice(S, K, r, T, sigma);
+    double marketPrice = BlackScholes.calculateCallOptionPrice(S, K, r, T, sigma);
 
-    Double iv = BlackScholes.impliedVolatility(marketPrice, S, K, r, T, true);
+    Double iv = BlackScholes.calculateImpliedVolatility(marketPrice, S, K, r, T, true);
     assertNotNull(iv);
     assertEquals(sigma, iv, 0.001);
   }
@@ -233,7 +233,7 @@ class OptionsAnalyticsTest {
         points, SPOT, SPOT, null);
 
     assertNotNull(result);
-    assertNotNull(result.getAtmIv());
+    assertNotNull(result.getAtTheMoneyImpliedVolatility());
   }
 
   private List<VolSurfaceCalculator.VolPoint> createTestVolPoints() {
@@ -245,14 +245,14 @@ class OptionsAnalyticsTest {
       points.add(VolSurfaceCalculator.VolPoint.builder()
           .strike(SPOT * (1 + (delta - 0.5) * 0.2))
           .delta(delta)
-          .iv(iv)
+          .impliedVolatility(iv)
           .isCall(true)
           .build());
 
       points.add(VolSurfaceCalculator.VolPoint.builder()
           .strike(SPOT * (1 + (delta - 0.5) * 0.2))
           .delta(-delta)
-          .iv(iv + 0.02) // Put skew
+          .impliedVolatility(iv + 0.02) // Put skew
           .isCall(false)
           .build());
     }
@@ -266,7 +266,7 @@ class OptionsAnalyticsTest {
     VolSurfaceResult result = VolSurfaceCalculator.calculateVolSurface(
         points, SPOT, SPOT, null);
 
-    assertNotNull(result.getRr25());
+    assertNotNull(result.getRiskReversal25Delta());
   }
 
   @Test
@@ -275,7 +275,7 @@ class OptionsAnalyticsTest {
     VolSurfaceResult result = VolSurfaceCalculator.calculateVolSurface(
         points, SPOT, SPOT, null);
 
-    assertNotNull(result.getBf25());
+    assertNotNull(result.getButterfly25Delta());
   }
 
   // ============================================================================
