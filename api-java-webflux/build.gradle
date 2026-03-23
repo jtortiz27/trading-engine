@@ -1,40 +1,17 @@
-plugins {
-	id 'java'
-	id 'org.springframework.boot'
-	id 'io.spring.dependency-management'
-}
-
-group = 'com.trading'
-version = '0.0.1-SNAPSHOT'
-
-java {
-	toolchain {
-		languageVersion = JavaLanguageVersion.of(24)
-	}
-}
-
-configurations {
-	compileOnly {
-		extendsFrom annotationProcessor
-	}
-}
+sourceCompatibility = '11'
+targetCompatibility = '11'
 
 repositories {
-	mavenCentral()
+    mavenCentral()
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-data-mongodb-reactive'
-	implementation 'org.springframework.boot:spring-boot-starter-webflux'
-	implementation 'org.springdoc:springdoc-openapi-starter-webflux-ui:2.5.0'
-	implementation project(":shared-models")
-	compileOnly 'org.projectlombok:lombok'
-	annotationProcessor 'org.projectlombok:lombok'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testImplementation 'io.projectreactor:reactor-test'
-	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-}
-
-tasks.named('test') {
-	useJUnitPlatform()
+    implementation 'org.springframework.boot:spring-boot-starter-data-mongodb-reactive:2.7.18'
+    implementation 'org.springframework.boot:spring-boot-starter-webflux:2.7.18'
+    implementation 'org.springdoc:springdoc-openapi-webflux-ui:1.6.15'
+    implementation project(":shared-models")
+    compileOnly 'org.projectlombok:lombok:1.18.30'
+    annotationProcessor 'org.projectlombok:lombok:1.18.30'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test:2.7.18'
+    testImplementation 'io.projectreactor:reactor-test:3.4.27'
 }

@@ -1,47 +1,19 @@
-# OS files
+# Build artifacts
+build/
+.gradle/
+
+# Allow Gradle wrapper JAR
+*.jar
+!gradle/wrapper/gradle-wrapper.jar
+
+# IDE
+.idea/
+*.iml
+.vscode/
+
+# OS
 .DS_Store
 Thumbs.db
 
-# IDEs
-.vscode/
-.idea/
-*.suo
-*.user
-*.userosscache
-*.sln.docstates
-
-# Build outputs
-bin/
-obj/
-*/build/
+# Logs
 *.log
-*.tmp
-*.cache
-
-# Node/npm
-node_modules/
-dist/
-
-# .NET
-*.pdb
-*.dbmdl
-*.bak
-*.zip
-*.nupkg
-project.lock.json
-project.fragment.lock.json
-*.sln.docstates
-
-# Java
-*.class
-*.jar
-*.war
-*.ear
-
-# Python
-__pycache__/
-*.py[cod]
-
-#Gradle
-*.gradle/
-*gradle*
