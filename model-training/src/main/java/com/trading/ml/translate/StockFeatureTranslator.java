@@ -13,7 +13,7 @@ public class StockFeatureTranslator implements Translator<StockFeatures, TradeRe
 
   @Override
   public NDList processInput(TranslatorContext ctx, StockFeatures input) {
-    float[] features = new float[] {(float) input.getPriceChange()
+    float[] features = new float[] {(float) (input.getPriceChange1Min() != null ? input.getPriceChange1Min() : 0.0)
           // Add more normalized fields here as needed
         };
     NDManager manager = ctx.getNDManager();
