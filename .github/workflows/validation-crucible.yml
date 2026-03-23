@@ -1,0 +1,183 @@
+name: Validation Crucible
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+jobs:
+  detect-changes:
+    runs-on: ubuntu-latest
+    outputs:
+      api-java-webflux: ${{ steps.changes.outputs.api-java-webflux }}
+      model-sidecar: ${{ steps.changes.outputs.model-sidecar }}
+      model-training: ${{ steps.changes.outputs.model-training }}
+      scraper-playwright-java: ${{ steps.changes.outputs.scraper-playwright-java }}
+      shared-models: ${{ steps.changes.outputs.shared-models }}
+      indicators-engine: ${{ steps.changes.outputs.indicators-engine }}
+      options-analytics: ${{ steps.changes.outputs.options-analytics }}
+      ibkr-client: ${{ steps.changes.outputs.ibkr-client }}
+      ibkr-integration: ${{ steps.changes.outputs.ibkr-integration }}
+      root: ${{ steps.changes.outputs.root }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Detect changed files
+        id: changes
+        run: |
+          # Get changed files
+          if [ "${{ github.event_name }}" == "pull_request" ]; then
+            changed_files=$(git diff --name-only origin/${{ github.base_ref }}...HEAD)
+          else
+            changed_files=$(git diff --name-only HEAD~1 HEAD)
+          fi
+
+          echo "Changed files:"
+          echo "$changed_files"
+
+          # Check each module
+          modules=("api-java-webflux" "model-sidecar" "model-training" "scraper-playwright-java" "shared-models" "indicators-engine" "options-analytics" "ibkr-client" "ibkr-integration")
+          
+          for module in "${modules[@]}"; do
+            if echo "$changed_files" | grep -q "^$module/"; then
+              echo "$module=true" >> $GITHUB_OUTPUT
+              echo "$module changed"
+            else
+              echo "$module=false" >> $GITHUB_OUTPUT
+            fi
+          done
+
+          # Check root files (build.gradle, settings.gradle, etc.)
+          if echo "$changed_files" | grep -qE "^(build\.gradle|settings\.gradle|gradle/|\.github/)"; then
+            echo "root=true" >> $GITHUB_OUTPUT
+            echo "Root build files changed"
+          else
+            echo "root=false" >> $GITHUB_OUTPUT
+          fi
+
+  build-api-java-webflux:
+    needs: detect-changes
+    if: ${{ needs.detect-changes.outputs.api-java-webflux == 'true' || needs.detect-changes.outputs.root == 'true' || needs.detect-changes.outputs.shared-models == 'true' || needs.detect-changes.outputs.model-sidecar == 'true' || needs.detect-changes.outputs.ibkr-client == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up JDK 24
+        uses: actions/setup-java@v4
+        with:
+          java-version: '24'
+          distribution: 'temurin'
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
+      - name: Build api-java-webflux
+        run: ./gradlew :api-java-webflux:build --no-daemon
+      - name: Run tests
+        run: ./gradlew :api-java-webflux:test --no-daemon
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: api-java-webflux-test-results
+          path: api-java-webflux/build/reports/tests/
+
+  build-model-sidecar:
+    needs: detect-changes
+    if: ${{ needs.detect-changes.outputs.model-sidecar == 'true' || needs.detect-changes.outputs.root == 'true' || needs.detect-changes.outputs.shared-models == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up JDK 24
+        uses: actions/setup-java@v4
+        with:
+          java-version: '24'
+          distribution: 'temurin'
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
+      - name: Build model-sidecar
+        run: ./gradlew :model-sidecar:build --no-daemon
+      - name: Run tests
+        run: ./gradlew :model-sidecar:test --no-daemon
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: model-sidecar-test-results
+          path: model-sidecar/build/reports/tests/
+
+  build-model-training:
+    needs: detect-changes
+    if: ${{ needs.detect-changes.outputs.model-training == 'true' || needs.detect-changes.outputs.root == 'true' || needs.detect-changes.outputs.shared-models == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up JDK 24
+        uses: actions/setup-java@v4
+        with:
+          java-version: '24'
+          distribution: 'temurin'
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
+      - name: Build model-training
+        run: ./gradlew :model-training:build --no-daemon
+      - name: Run tests
+        run: ./gradlew :model-training:test --no-daemon
+
+  build-scraper:
+    needs: detect-changes
+    if: ${{ needs.detect-changes.outputs.scraper-playwright-java == 'true' || needs.detect-changes.outputs.root == 'true' || needs.detect-changes.outputs.shared-models == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up JDK 24
+        uses: actions/setup-java@v4
+        with:
+          java-version: '24'
+          distribution: 'temurin'
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
+      - name: Build scraper
+        run: ./gradlew :scraper-playwright-java:build --no-daemon
+      - name: Run tests
+        run: ./gradlew :scraper-playwright-java:test --no-daemon
+
+  spotless-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up JDK 24
+        uses: actions/setup-java@v4
+        with:
+          java-version: '24'
+          distribution: 'temurin'
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
+      - name: Spotless check
+        run: ./gradlew spotlessCheck --no-daemon
+
+  summary:
+    needs: [detect-changes, build-api-java-webflux, build-model-sidecar, build-model-training, build-scraper, spotless-check]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Build Summary
+        run: |
+          echo "## Validation Crucible Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Module | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|--------|--------|" >> $GITHUB_STEP_SUMMARY
+          
+          # Check each job status
+          jobs=("build-api-java-webflux" "build-model-sidecar" "build-model-training" "build-scraper" "spotless-check")
+          
+          for job in "${jobs[@]}"; do
+            status="${{ needs.${job}.result }}"
+            if [ "$status" == "success" ]; then
+              echo "| ${job} | ✅ Passed |" >> $GITHUB_STEP_SUMMARY
+            elif [ "$status" == "skipped" ]; then
+              echo "| ${job} | ⏭️ Skipped (no changes) |" >> $GITHUB_STEP_SUMMARY
+            else
+              echo "| ${job} | ❌ Failed |" >> $GITHUB_STEP_SUMMARY
+            fi
+          done
