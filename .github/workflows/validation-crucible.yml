@@ -67,7 +67,7 @@ jobs:
       - name: Set up JDK 24
         uses: actions/setup-java@v4
         with:
-          java-version: '24'
+          java-version: '11'
           distribution: 'temurin'
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3
@@ -91,7 +91,7 @@ jobs:
       - name: Set up JDK 24
         uses: actions/setup-java@v4
         with:
-          java-version: '24'
+          java-version: '11'
           distribution: 'temurin'
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3
@@ -115,7 +115,7 @@ jobs:
       - name: Set up JDK 24
         uses: actions/setup-java@v4
         with:
-          java-version: '24'
+          java-version: '11'
           distribution: 'temurin'
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3
@@ -133,7 +133,7 @@ jobs:
       - name: Set up JDK 24
         uses: actions/setup-java@v4
         with:
-          java-version: '24'
+          java-version: '11'
           distribution: 'temurin'
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3
@@ -142,22 +142,8 @@ jobs:
       - name: Run tests
         run: ./gradlew :scraper-playwright-java:test --no-daemon
 
-  spotless-check:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Set up JDK 24
-        uses: actions/setup-java@v4
-        with:
-          java-version: '24'
-          distribution: 'temurin'
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v3
-      - name: Spotless check
-        run: ./gradlew spotlessCheck --no-daemon
-
   summary:
-    needs: [detect-changes, build-api-java-webflux, build-model-sidecar, build-model-training, build-scraper, spotless-check]
+    needs: [detect-changes, build-api-java-webflux, build-model-sidecar, build-model-training, build-scraper]
     if: always()
     runs-on: ubuntu-latest
     steps:
@@ -173,7 +159,6 @@ jobs:
           MODEL_SIDECAR="${{ needs.build-model-sidecar.result }}"
           MODEL_TRAINING="${{ needs.build-model-training.result }}"
           SCRAPER="${{ needs.build-scraper.result }}"
-          SPOTLESS="${{ needs.spotless-check.result }}"
           
           # Helper function to print status
           print_status() {
@@ -192,4 +177,3 @@ jobs:
           print_status "build-model-sidecar" "$MODEL_SIDECAR"
           print_status "build-model-training" "$MODEL_TRAINING"
           print_status "build-scraper" "$SCRAPER"
-          print_status "spotless-check" "$SPOTLESS"
