@@ -104,8 +104,8 @@ public class RecommendationService {
         switch (strategy.getStrategyType()) {
             case IRON_CONDOR -> {
                 // Short put spread + Short call spread
-                legs.add(new Leg(LegType.SHORT_PUT, price * 0.95, price * 0.90));
-                legs.add(new Leg(LegType.SHORT_CALL, price * 1.05, price * 1.10));
+                legs.add(new Leg(LegType.SHORT_PUT, price * 0.95, 1));
+                legs.add(new Leg(LegType.SHORT_CALL, price * 1.05, 1));
             }
             case BUTTERFLY -> {
                 // Buy wing + Sell 2x ATM + Buy wing

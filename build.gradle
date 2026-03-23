@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id 'io.freefair.lombok' version '8.4' apply false
 }
 
 allprojects {
@@ -20,6 +21,7 @@ allprojects {
 
 subprojects {
     apply plugin: 'java'
+    apply plugin: 'io.freefair.lombok'
 
     group = 'com.trading'
     version = '1.0.0'
@@ -28,5 +30,9 @@ subprojects {
 
     repositories {
         mavenCentral()
+    }
+
+    lombok {
+        version = '1.18.30'
     }
 }

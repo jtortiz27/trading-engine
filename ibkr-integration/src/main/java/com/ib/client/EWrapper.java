@@ -84,53 +84,11 @@ public interface EWrapper {
     void wshMetaData(int reqId, String dataJson);
     void wshEventData(int reqId, String dataJson);
     void historicalSchedule(int reqId, String startDateTime, String endDateTime, String timeZone, List<HistoricalSession> sessions);
-    void rerouteMktDataReq(int reqId, int conId, String exchange);
-    void rerouteMktDepthReq(int reqId, int conId, String exchange);
     void tickReqParams(int tickerId, double minTick, String bboExchange, int snapshotPermissions);
     void headTimestamp(int reqId, String headTimestamp);
     void histogramData(int reqId, List<HistogramEntry> items);
-}
-
-class TickAttrib {
-    public boolean askPastHigh;
-    public boolean bidPastLow;
-}
-
-class ScannerSubscription {
-    public int numberOfRows;
-    public String instrument;
-    public String locationCode;
-    public String scanCode;
-    public double abovePrice;
-    public double belowPrice;
-    public int aboveVolume;
-    public double marketCapAbove;
-    public double marketCapBelow;
-    public String moodyRatingAbove;
-    public String moodyRatingBelow;
-    public String spRatingAbove;
-    public String spRatingBelow;
-    public String maturityDateAbove;
-    public String maturityDateBelow;
-    public double couponRateAbove;
-    public double couponRateBelow;
-    public boolean excludeConvertible;
-    public String scannerSettingPairs;
-    public String stockTypeFilter;
-}
-
-class SoftDollarTier {
-    public String name;
-    public String value;
-    public String displayName;
-}
-
-class FamilyCode {
-    public String accountID;
-    public String familyCodeStr;
-}
-
-class ContractDescription {
-    public Contract contract;
-    public String[] derivativeSecTypes;
+    void positionMulti(int reqId, String account, String modelCode, Contract contract, Decimal pos, double avgCost);
+    void positionMultiEnd(int reqId);
+    void accountUpdateMulti(int reqId, String account, String modelCode, String key, String value, String currency);
+    void accountUpdateMultiEnd(int reqId);
 }

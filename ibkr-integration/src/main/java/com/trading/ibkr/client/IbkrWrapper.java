@@ -6,6 +6,7 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
@@ -463,14 +464,21 @@ public class IbkrWrapper implements EWrapper {
     @Override
     public void historicalDataUpdate(int reqId, Bar bar) {}
 
-    @Override
     public void rerouteMarketData(int reqId, int conId, String exchange) {}
 
-    @Override
     public void rerouteMarketDepth(int reqId, int conId, String exchange) {}
 
     @Override
-    public void tickReqParams(int tickerId, double minTick, String bboExchange, int snapshotPermissions) {}
+    public void marketDataType(int reqId, int marketDataType) {}
+
+    @Override
+    public void updateMktDepth(int tickerId, int position, int operation, int side, double price, Decimal size) {
+        log.debug("Market depth: tickerId={}, position={}, operation={}, side={}, price={}, size={}",
+                tickerId, position, operation, side, price, size);
+    }
+
+    @Override
+    public void updateMktDepthL2(int tickerId, int position, String marketMaker, int operation, int side, double price, Decimal size, boolean isSmartDepth) {}
 
     // Inner classes for data storage
 

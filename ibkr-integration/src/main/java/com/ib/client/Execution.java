@@ -13,13 +13,3 @@ public class Execution {
     public int shares;
     public double price;
 }
-
-/**
- * Stub implementation of the IBKR CommissionReport class.
- */
-class CommissionReport {
-    public String execId;
-    public double commission;
-    public String currency;
-    public double realizedPNL;
-}
