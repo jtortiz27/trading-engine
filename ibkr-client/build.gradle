@@ -1,16 +1,13 @@
 plugins {
-    id 'java'
-    id 'org.springframework.boot' apply false
-    id 'io.spring.dependency-management'
+    id 'java-library'
 }
 
 group = 'com.trading'
 version = '1.0.0'
 
 java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(21)
-    }
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
 }
 
 repositories {
@@ -18,22 +15,24 @@ repositories {
 }
 
 dependencies {
-    implementation platform('io.projectreactor:reactor-bom:2023.0.0')
-    
-    implementation 'org.springframework.boot:spring-boot-starter-webflux'
-    implementation 'io.projectreactor:reactor-core'
+    // Reactive Streams
+    api 'io.projectreactor:reactor-core:3.6.3'
     
     // IBKR TWS API
-    implementation 'com.interactivebrokers:tws-api:9.81.1'
+    api 'com.interactivebrokers:tws-api:9.81.1'
     
-    implementation project(':shared-models')
+    // Lombok
+    compileOnly 'org.projectlombok:lombok:1.18.30'
+    annotationProcessor 'org.projectlombok:lombok:1.18.30'
     
-    compileOnly 'org.projectlombok:lombok'
-    annotationProcessor 'org.projectlombok:lombok'
+    // SLF4J
+    api 'org.slf4j:slf4j-api:2.0.9'
     
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation 'io.projectreactor:reactor-test'
-    testImplementation 'org.junit.jupiter:junit-jupiter'
+    // Testing
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.0'
+    testImplementation 'io.projectreactor:reactor-test:3.6.3'
+    testImplementation 'org.mockito:mockito-core:5.8.0'
+    testImplementation 'org.mockito:mockito-junit-jupiter:5.8.0'
 }
 
 tasks.named('test') {
