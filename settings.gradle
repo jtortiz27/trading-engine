@@ -1,3 +1,11 @@
 rootProject.name = 'trading-engine'
 
-include ('api-java-webflux','model-sidecar','scraper-playwright-java','model-training', "shared-models")
+include (
+    'api-java-webflux',
+    'model-sidecar',
+    'scraper-playwright-java',
+    'model-training',
+    'shared-models',
+    'ibkr-client',
+    'ibkr-integration'
+)
