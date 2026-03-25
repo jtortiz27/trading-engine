@@ -1,0 +1,35 @@
+plugins {
+    id 'java-library'
+}
+
+group = 'com.trading'
+version = '1.0.0'
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // Lombok for model classes
+    compileOnly 'org.projectlombok:lombok:1.18.30'
+    annotationProcessor 'org.projectlombok:lombok:1.18.30'
+    
+    // Reactive Streams (for future reactive indicator pipelines)
+    api 'io.projectreactor:reactor-core:3.6.3'
+    
+    // Logging
+    api 'org.slf4j:slf4j-api:2.0.9'
+    
+    // Testing
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.0'
+    testImplementation 'io.projectreactor:reactor-test:3.6.3'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}

@@ -7,5 +7,6 @@ include (
     'model-training',
     'shared-models',
     'ibkr-client',
-    'ibkr-integration'
+    'ibkr-integration',
+    'indicators-engine'
 )
