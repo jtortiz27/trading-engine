@@ -142,8 +142,62 @@ jobs:
       - name: Run tests
         run: ./gradlew :scraper-playwright-java:test --no-daemon
 
+  build-indicators-engine:
+    needs: detect-changes
+    if: ${{ needs.detect-changes.outputs.indicators-engine == 'true' || needs.detect-changes.outputs.root == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
+      - name: Build indicators-engine
+        run: ./gradlew :indicators-engine:build --no-daemon
+      - name: Run tests
+        run: ./gradlew :indicators-engine:test --no-daemon
+
+  build-ibkr-client:
+    needs: detect-changes
+    if: ${{ needs.detect-changes.outputs.ibkr-client == 'true' || needs.detect-changes.outputs.root == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
+      - name: Build ibkr-client
+        run: ./gradlew :ibkr-client:build --no-daemon
+      - name: Run tests
+        run: ./gradlew :ibkr-client:test --no-daemon
+
+  build-ibkr-integration:
+    needs: detect-changes
+    if: ${{ needs.detect-changes.outputs.ibkr-integration == 'true' || needs.detect-changes.outputs.root == 'true' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
+      - name: Build ibkr-integration
+        run: ./gradlew :ibkr-integration:build --no-daemon
+      - name: Run tests
+        run: ./gradlew :ibkr-integration:test --no-daemon
+
   summary:
-    needs: [detect-changes, build-api-java-webflux, build-model-sidecar, build-model-training, build-scraper]
+    needs: [detect-changes, build-api-java-webflux, build-model-sidecar, build-model-training, build-scraper, build-indicators-engine, build-ibkr-client, build-ibkr-integration]
     if: always()
     runs-on: ubuntu-latest
     steps:
@@ -159,6 +213,9 @@ jobs:
           MODEL_SIDECAR="${{ needs.build-model-sidecar.result }}"
           MODEL_TRAINING="${{ needs.build-model-training.result }}"
           SCRAPER="${{ needs.build-scraper.result }}"
+          INDICATORS="${{ needs.build-indicators-engine.result }}"
+          IBKR_CLIENT="${{ needs.build-ibkr-client.result }}"
+          IBKR_INTEGRATION="${{ needs.build-ibkr-integration.result }}"
           
           # Helper function to print status
           print_status() {
@@ -177,3 +234,6 @@ jobs:
           print_status "build-model-sidecar" "$MODEL_SIDECAR"
           print_status "build-model-training" "$MODEL_TRAINING"
           print_status "build-scraper" "$SCRAPER"
+          print_status "build-indicators-engine" "$INDICATORS"
+          print_status "build-ibkr-client" "$IBKR_CLIENT"
+          print_status "build-ibkr-integration" "$IBKR_INTEGRATION"
