@@ -4,6 +4,7 @@ import com.ib.client.Contract;
 import com.ib.client.Decimal;
 import com.ib.client.DeltaNeutralContract;
 import com.ib.client.EClientSocket;
+import com.ib.client.EJavaSignal;
 import com.ib.client.EReader;
 import com.ib.client.EReaderSignal;
 import com.ib.client.EWrapper;
