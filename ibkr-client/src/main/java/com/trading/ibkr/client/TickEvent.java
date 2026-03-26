@@ -1,13 +1,8 @@
 package com.trading.ibkr.client;
 
-import lombok.Builder;
-import lombok.Data;
-
 /**
  * Represents a market data tick event from IBKR.
  */
-@Data
-@Builder
 public class TickEvent {
     
     private final int tickerId;
@@ -16,6 +11,69 @@ public class TickEvent {
     private final String stringValue;
     private final long size;
     private final TickAttributes attributes;
+    
+    private TickEvent(Builder builder) {
+        this.tickerId = builder.tickerId;
+        this.tickType = builder.tickType;
+        this.value = builder.value;
+        this.stringValue = builder.stringValue;
+        this.size = builder.size;
+        this.attributes = builder.attributes;
+    }
+    
+    public static Builder builder() {
+        return new Builder();
+    }
+    
+    public static class Builder {
+        private int tickerId;
+        private TickType tickType;
+        private double value;
+        private String stringValue;
+        private long size;
+        private TickAttributes attributes;
+        
+        public Builder tickerId(int tickerId) {
+            this.tickerId = tickerId;
+            return this;
+        }
+        
+        public Builder tickType(TickType tickType) {
+            this.tickType = tickType;
+            return this;
+        }
+        
+        public Builder value(double value) {
+            this.value = value;
+            return this;
+        }
+        
+        public Builder stringValue(String stringValue) {
+            this.stringValue = stringValue;
+            return this;
+        }
+        
+        public Builder size(long size) {
+            this.size = size;
+            return this;
+        }
+        
+        public Builder attributes(TickAttributes attributes) {
+            this.attributes = attributes;
+            return this;
+        }
+        
+        public TickEvent build() {
+            return new TickEvent(this);
+        }
+    }
+    
+    public int getTickerId() { return tickerId; }
+    public TickType getTickType() { return tickType; }
+    public double getValue() { return value; }
+    public String getStringValue() { return stringValue; }
+    public long getSize() { return size; }
+    public TickAttributes getAttributes() { return attributes; }
     
     /**
      * Standard tick types as defined by IBKR.
@@ -101,11 +159,48 @@ public class TickEvent {
     /**
      * Additional tick attributes.
      */
-    @Data
-    @Builder
     public static class TickAttributes {
         private final boolean canAutoExecute;
         private final boolean pastLimit;
         private final boolean preOpen;
+        
+        private TickAttributes(Builder builder) {
+            this.canAutoExecute = builder.canAutoExecute;
+            this.pastLimit = builder.pastLimit;
+            this.preOpen = builder.preOpen;
+        }
+        
+        public static Builder builder() {
+            return new Builder();
+        }
+        
+        public static class Builder {
+            private boolean canAutoExecute;
+            private boolean pastLimit;
+            private boolean preOpen;
+            
+            public Builder canAutoExecute(boolean canAutoExecute) {
+                this.canAutoExecute = canAutoExecute;
+                return this;
+            }
+            
+            public Builder pastLimit(boolean pastLimit) {
+                this.pastLimit = pastLimit;
+                return this;
+            }
+            
+            public Builder preOpen(boolean preOpen) {
+                this.preOpen = preOpen;
+                return this;
+            }
+            
+            public TickAttributes build() {
+                return new TickAttributes(this);
+            }
+        }
+        
+        public boolean isCanAutoExecute() { return canAutoExecute; }
+        public boolean isPastLimit() { return pastLimit; }
+        public boolean isPreOpen() { return preOpen; }
     }
 }

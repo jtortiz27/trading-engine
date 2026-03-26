@@ -15,13 +15,15 @@ import com.ib.client.TickAttrib;
 import com.ib.client.TickAttribBidAsk;
 import com.ib.client.TickAttribLast;
 import com.trading.ibkr.config.IbkrGatewayProperties;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.FluxSink;
 import reactor.core.publisher.Mono;
@@ -32,8 +34,9 @@ import reactor.core.scheduler.Schedulers;
  * Production implementation of ReactiveIbkrClient.
  * Wraps IBKR's EClientSocket with reactive streams.
  */
-@Slf4j
 public class ReactiveIbkrClientImpl implements ReactiveIbkrClient, EWrapper {
+
+    private static final Logger log = LoggerFactory.getLogger(ReactiveIbkrClientImpl.class);
 
     private final IbkrGatewayProperties properties;
     private EClientSocket clientSocket;
@@ -436,9 +439,6 @@ public class ReactiveIbkrClientImpl implements ReactiveIbkrClient, EWrapper {
     public void tickSnapshotEnd(int reqId) {}
 
     @Override
-    public void marketDataType(int reqId, int marketDataType) {}
-
-    @Override
     public void tickByTickAllLast(int reqId, int tickType, long time, double price, Decimal size,
                                    TickAttribLast tickAttribLast, String exchange, String specialConditions) {}
 
@@ -476,7 +476,7 @@ public class ReactiveIbkrClientImpl implements ReactiveIbkrClient, EWrapper {
     public void execDetailsEnd(int reqId) {}
 
     @Override
-    public void updateMktDepth(int tickerId, int position, String operation, int side,
+    public void updateMktDepth(int tickerId, int position, int operation, int side,
                                 double price, Decimal size) {}
 
     @Override
@@ -523,9 +523,6 @@ public class ReactiveIbkrClientImpl implements ReactiveIbkrClient, EWrapper {
 
     @Override
     public void deltaNeutralValidation(int reqId, DeltaNeutralContract deltaNeutralContract) {}
-
-    @Override
-    public void commissionReport(com.ib.client.CommissionReport commissionReport) {}
 
     @Override
     public void position(String account, Contract contract, Decimal pos, double avgCost) {}
@@ -594,13 +591,13 @@ public class ReactiveIbkrClientImpl implements ReactiveIbkrClient, EWrapper {
                           double realizedPnL, double value) {}
 
     @Override
-    public void historicalTicks(int reqId, java.util.List<com.ib.client.HistoricalTick> ticks, boolean done) {}
+    public void historicalTicks(int reqId, List<com.ib.client.HistoricalTick> ticks, boolean done) {}
 
     @Override
-    public void historicalTicksBidAsk(int reqId, java.util.List<com.ib.client.HistoricalTickBidAsk> ticks, boolean done) {}
+    public void historicalTicksBidAsk(int reqId, List<com.ib.client.HistoricalTickBidAsk> ticks, boolean done) {}
 
     @Override
-    public void historicalTicksLast(int reqId, java.util.List<com.ib.client.HistoricalTickLast> ticks, boolean done) {}
+    public void historicalTicksLast(int reqId, List<com.ib.client.HistoricalTickLast> ticks, boolean done) {}
 
     @Override
     public void completedOrder(Contract contract, Order order, OrderState orderState) {}
@@ -619,41 +616,11 @@ public class ReactiveIbkrClientImpl implements ReactiveIbkrClient, EWrapper {
 
     @Override
     public void historicalSchedule(int reqId, String startDateTime, String endDateTime, String timeZone,
-                                    java.util.List<com.ib.client.HistoricalSession> sessions) {}
-
-    @Override
-    public void userInfo(int reqId, String whiteBrandingId) {}
+                                    List<com.ib.client.HistoricalSession> sessions) {}
 
     @Override
     public void bondContractDetails(int reqId, com.ib.client.ContractDetails contractDetails) {}
 
     @Override
-    public void connectAck(long timestamp) {}
-
-    // Additional EWrapper methods for TWS API 9.81.1 compatibility
-    @Override
-    public void headTimestamp(int reqId, String headTimestamp) {}
-
-    @Override
-    public void smartComponents(int reqId, Map<Integer, Map.Entry<String, Character>> theMap) {}
-
-    @Override
-    public void newsProviders(com.ib.client.NewsProvider[] newsProviders) {}
-
-    @Override
-    public void tickNews(int tickerId, long timeStamp, String providerCode, String articleId,
-                         String headline, String extraData) {}
-
-    @Override
-    public void newsArticle(int requestId, int articleType, String articleText) {}
-
-    @Override
-    public void historicalNews(int requestId, String time, String providerCode, String articleId,
-                               String headline) {}
-
-    @Override
-    public void historicalNewsEnd(int requestId, boolean hasMore) {}
-
-    @Override
-    public void histogramData(int reqId, java.util.List<com.ib.client.HistogramEntry> items) {}
+    public void userInfo(int reqId, String whiteBrandingId) {}
 }

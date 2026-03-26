@@ -6,14 +6,16 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 import reactor.core.publisher.Sinks;
 
-@Slf4j
 @Component
 public class IbkrConnectionManager implements EWrapper {
+
+  private static final Logger log = LoggerFactory.getLogger(IbkrConnectionManager.class);
 
   private final IbkrGatewayProperties properties;
   private final EClientSocket clientSocket;
@@ -300,16 +302,13 @@ public class IbkrConnectionManager implements EWrapper {
   public void tickSnapshotEnd(int reqId) {}
 
   @Override
-  public void marketDataType(int reqId, int marketDataType) {}
-
-  @Override
-  public void commissionReport(CommissionReport commissionReport) {}
-
-  @Override
   public void position(String account, Contract contract, Decimal pos, double avgCost) {}
 
   @Override
   public void positionEnd() {}
+
+  @Override
+  public void stopRequested() {}
 
   @Override
   public void accountSummary(
@@ -462,8 +461,5 @@ public class IbkrConnectionManager implements EWrapper {
   public void historicalSchedule(int reqId, String startDateTime, String endDateTime, String timeZone, List<HistoricalSession> sessions) {}
 
   @Override
-  public void connectAck(long timestamp) {}
-
-  @Override
-  public void stopRequested() {}
+  public void userInfo(int reqId, String whiteBrandingId) {}
 }
