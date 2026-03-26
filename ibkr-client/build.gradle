@@ -20,7 +20,7 @@ repositories {
 
 dependencies {
     // Spring Boot
-    implementation platform('org.springframework.boot:spring-boot-dependencies:3.4.4')
+    implementation platform('org.springframework.boot:spring-boot-dependencies:3.5.8')
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
 
     // Reactive Streams
