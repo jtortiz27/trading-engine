@@ -2,6 +2,8 @@ package com.trading.ibkr.client;
 
 import com.ib.client.*;
 import com.trading.ibkr.config.IbkrGatewayProperties;
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import lombok.extern.slf4j.Slf4j;
@@ -74,8 +76,8 @@ public class IbkrConnectionManager implements EWrapper {
   // ==================== EWrapper Implementation ====================
 
   @Override
-  public void connectAck() {
-    log.debug("Connection acknowledged by IBKR");
+  public void connectAck(long timestamp) {
+    log.debug("Connection acknowledged by IBKR at {}", timestamp);
   }
 
   @Override
@@ -225,7 +227,7 @@ public class IbkrConnectionManager implements EWrapper {
   public void updateMktDepth(
       int tickerId,
       int position,
-      String operation,
+      int operation,
       int side,
       double price,
       Decimal size) {}
@@ -365,8 +367,8 @@ public class IbkrConnectionManager implements EWrapper {
       int underlyingConId,
       String tradingClass,
       String multiplier,
-      SetOfString expirations,
-      SetOfDouble strikes) {}
+      Set<String> expirations,
+      Set<Double> strikes) {}
 
   @Override
   public void securityDefinitionOptionalParameterEnd(int reqId) {}
@@ -460,5 +462,8 @@ public class IbkrConnectionManager implements EWrapper {
   public void historicalSchedule(int reqId, String startDateTime, String endDateTime, String timeZone, List<HistoricalSession> sessions) {}
 
   @Override
-  public void userInfo(int reqId, String whiteBrandingId) {}
+  public void connectAck(long timestamp) {}
+
+  @Override
+  public void stopRequested() {}
 }

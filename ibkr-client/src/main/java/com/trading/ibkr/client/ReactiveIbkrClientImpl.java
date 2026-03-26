@@ -207,20 +207,7 @@ public class ReactiveIbkrClientImpl implements ReactiveIbkrClient, EWrapper {
     // ==================== EWrapper Implementation ====================
 
     @Override
-    public void connected() {
-        log.info("Connected to IBKR Gateway");
-        connected.set(true);
-    }
-
-    @Override
-    public void disconnected() {
-        log.warn("Disconnected from IBKR Gateway");
-        connected.set(false);
-        if (!connectionFuture.isDone()) {
-            connectionFuture.completeExceptionally(new RuntimeException("Disconnected"));
-        }
-        connectionSink.tryEmitNext(false);
-    }
+    public void connectAck(long timestamp) {}
 
     @Override
     public void nextValidId(int orderId) {
@@ -547,6 +534,9 @@ public class ReactiveIbkrClientImpl implements ReactiveIbkrClient, EWrapper {
     public void positionEnd() {}
 
     @Override
+    public void stopRequested() {}
+
+    @Override
     public void verifyMessageAPI(String apiData) {}
 
     @Override
@@ -638,7 +628,7 @@ public class ReactiveIbkrClientImpl implements ReactiveIbkrClient, EWrapper {
     public void bondContractDetails(int reqId, com.ib.client.ContractDetails contractDetails) {}
 
     @Override
-    public void connectAck() {}
+    public void connectAck(long timestamp) {}
 
     // Additional EWrapper methods for TWS API 9.81.1 compatibility
     @Override

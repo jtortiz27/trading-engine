@@ -13,7 +13,7 @@ import java.util.List;
  * def beta = Covariance(close, spxClose, length) / Sqr(StDev(spxClose, length));
  * ```
  */
-public class CorrelationCalculator implements IndicatorCalculator<CorrelationInput, CorrelationResult> {
+public class CorrelationCalculator implements IndicatorCalculator<CorrelationCalculator.CorrelationInput, CorrelationResult> {
 
   private final int length;
 
