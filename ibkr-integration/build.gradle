@@ -6,7 +6,7 @@ group = 'com.trading'
 version = '1.0.0'
 
 java {
-    sourceCompatibility = '21'
+    sourceCompatibility = '17'
 }
 
 repositories {
