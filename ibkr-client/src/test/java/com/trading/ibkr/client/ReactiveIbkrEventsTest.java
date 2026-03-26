@@ -18,13 +18,13 @@ class ReactiveIbkrEventsTest {
             .tickerId(1)
             .tickType(TickEvent.TickType.LAST_PRICE)
             .value(150.0)
-            .size(100)
+            .size(100L)
             .build();
 
-        assertEquals(1, event.getTickerId());
+        assertEquals(Integer.valueOf(1), event.getTickerId());
         assertEquals(TickEvent.TickType.LAST_PRICE, event.getTickType());
-        assertEquals(150.0, event.getValue());
-        assertEquals(100, event.getSize());
+        assertEquals(Double.valueOf(150.0), event.getValue());
+        assertEquals(Long.valueOf(100L), event.getSize());
     }
 
     @Test
@@ -32,14 +32,14 @@ class ReactiveIbkrEventsTest {
         OrderStatusEvent event = OrderStatusEvent.builder()
             .orderId(123)
             .status(OrderStatusEvent.OrderStatus.SUBMITTED)
-            .filled(100)
-            .remaining(0)
+            .filled(100L)
+            .remaining(0L)
             .avgFillPrice(150.0)
             .build();
 
-        assertEquals(123, event.getOrderId());
+        assertEquals(Integer.valueOf(123), event.getOrderId());
         assertEquals(OrderStatusEvent.OrderStatus.SUBMITTED, event.getStatus());
-        assertEquals(100, event.getFilled());
+        assertEquals(Long.valueOf(100L), event.getFilled());
     }
 
     @Test
@@ -52,10 +52,10 @@ class ReactiveIbkrEventsTest {
             expirations, strikes
         );
 
-        assertEquals(1, event.getRequestId());
+        assertEquals(Integer.valueOf(1), event.getRequestId());
         assertEquals("AAPL", event.getUnderlyingSymbol());
-        assertEquals(265598, event.getUnderlyingConId());
-        assertFalse(event.isComplete());
+        assertEquals(Integer.valueOf(265598), event.getUnderlyingConId());
+        assertEquals(Boolean.FALSE, event.getComplete());
         assertEquals(expirations, event.getExpirations());
     }
 
@@ -63,15 +63,15 @@ class ReactiveIbkrEventsTest {
     void optionsChainEvent_complete_shouldCreateCorrectly() {
         OptionsChainEvent event = OptionsChainEvent.complete(1);
 
-        assertEquals(1, event.getRequestId());
-        assertTrue(event.isComplete());
+        assertEquals(Integer.valueOf(1), event.getRequestId());
+        assertEquals(Boolean.TRUE, event.getComplete());
         assertNull(event.getExpirations());
     }
 
     @Test
     void contractDetailsEvent_shouldCreateCorrectly() {
         ContractDetailsEvent event = ContractDetailsEvent.complete(1);
-        
+
         assertEquals(1, event.getRequestId());
         assertTrue(event.isComplete());
     }
