@@ -72,9 +72,9 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3
       - name: Build api-java-webflux
-        run: ./gradlew :api-java-webflux:build --no-daemon
+        run: ./gradlew :api-java-webflux:build --info --no-daemon
       - name: Run tests
-        run: ./gradlew :api-java-webflux:test --no-daemon
+        run: ./gradlew :api-java-webflux:test --info --no-daemon
       - name: Upload test results
         if: always()
         uses: actions/upload-artifact@v4
@@ -96,9 +96,9 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3
       - name: Build model-sidecar
-        run: ./gradlew :model-sidecar:build --no-daemon
+        run: ./gradlew :model-sidecar:build --info --no-daemon
       - name: Run tests
-        run: ./gradlew :model-sidecar:test --no-daemon
+        run: ./gradlew :model-sidecar:test --info --no-daemon
       - name: Upload test results
         if: always()
         uses: actions/upload-artifact@v4
@@ -120,9 +120,9 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3
       - name: Build model-training
-        run: ./gradlew :model-training:build --no-daemon
+        run: ./gradlew :model-training:build --info --no-daemon
       - name: Run tests
-        run: ./gradlew :model-training:test --no-daemon
+        run: ./gradlew :model-training:test --info --no-daemon
 
   build-scraper:
     needs: detect-changes
@@ -138,9 +138,9 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3
       - name: Build scraper
-        run: ./gradlew :scraper-playwright-java:build --no-daemon
+        run: ./gradlew :scraper-playwright-java:build --info --no-daemon
       - name: Run tests
-        run: ./gradlew :scraper-playwright-java:test --no-daemon
+        run: ./gradlew :scraper-playwright-java:test --info --no-daemon
 
   build-indicators-engine:
     needs: detect-changes
@@ -156,9 +156,9 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3
       - name: Build indicators-engine
-        run: ./gradlew :indicators-engine:build --no-daemon
+        run: ./gradlew :indicators-engine:build --info --no-daemon
       - name: Run tests
-        run: ./gradlew :indicators-engine:test --no-daemon
+        run: ./gradlew :indicators-engine:test --info --no-daemon
 
   build-ibkr-client:
     needs: detect-changes
@@ -174,9 +174,9 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3
       - name: Build ibkr-client
-        run: ./gradlew :ibkr-client:build --no-daemon
+        run: ./gradlew :ibkr-client:build --info --no-daemon
       - name: Run tests
-        run: ./gradlew :ibkr-client:test --no-daemon
+        run: ./gradlew :ibkr-client:test --info --no-daemon
 
   build-ibkr-integration:
     needs: detect-changes
@@ -192,9 +192,9 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3
       - name: Build ibkr-integration
-        run: ./gradlew :ibkr-integration:build --no-daemon
+        run: ./gradlew :ibkr-integration:build --info --no-daemon
       - name: Run tests
-        run: ./gradlew :ibkr-integration:test --no-daemon
+        run: ./gradlew :ibkr-integration:test --info --no-daemon
 
   summary:
     needs: [detect-changes, build-api-java-webflux, build-model-sidecar, build-model-training, build-scraper, build-indicators-engine, build-ibkr-client, build-ibkr-integration]
