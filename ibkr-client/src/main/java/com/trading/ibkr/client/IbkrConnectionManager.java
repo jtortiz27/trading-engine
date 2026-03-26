@@ -2,20 +2,19 @@ package com.trading.ibkr.client;
 
 import com.ib.client.*;
 import com.trading.ibkr.config.IbkrGatewayProperties;
+import java.time.Instant;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 import reactor.core.publisher.Sinks;
 
+@Slf4j
 @Component
 public class IbkrConnectionManager implements EWrapper {
-
-  private static final Logger log = LoggerFactory.getLogger(IbkrConnectionManager.class);
 
   private final IbkrGatewayProperties properties;
   private final EClientSocket clientSocket;
@@ -79,7 +78,7 @@ public class IbkrConnectionManager implements EWrapper {
 
   @Override
   public void connectAck(long timestamp) {
-    log.debug("Connection acknowledged by IBKR at {}", timestamp);
+    log.debug("Connection acknowledged by IBKR at {}", Instant.ofEpochMilli(timestamp));
   }
 
   @Override

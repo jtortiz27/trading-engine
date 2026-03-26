@@ -15,6 +15,7 @@ import com.ib.client.TickAttrib;
 import com.ib.client.TickAttribBidAsk;
 import com.ib.client.TickAttribLast;
 import com.trading.ibkr.config.IbkrGatewayProperties;
+import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -22,8 +23,9 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.FluxSink;
 import reactor.core.publisher.Mono;
@@ -34,9 +36,10 @@ import reactor.core.scheduler.Schedulers;
  * Production implementation of ReactiveIbkrClient.
  * Wraps IBKR's EClientSocket with reactive streams.
  */
+@Slf4j
+@Component
+@RequiredArgsConstructor
 public class ReactiveIbkrClientImpl implements ReactiveIbkrClient, EWrapper {
-
-    private static final Logger log = LoggerFactory.getLogger(ReactiveIbkrClientImpl.class);
 
     private final IbkrGatewayProperties properties;
     private EClientSocket clientSocket;
@@ -54,10 +57,6 @@ public class ReactiveIbkrClientImpl implements ReactiveIbkrClient, EWrapper {
     private final Map<Integer, FluxSink<OrderStatusEvent>> orderStatusSinks = new ConcurrentHashMap<>();
     private final Map<Integer, FluxSink<ContractDetailsEvent>> contractDetailsSinks = new ConcurrentHashMap<>();
     private final Map<Integer, FluxSink<AccountSummaryEvent>> accountSummarySinks = new ConcurrentHashMap<>();
-
-    public ReactiveIbkrClientImpl(IbkrGatewayProperties properties) {
-        this.properties = properties;
-    }
 
     @Override
     public Mono<Void> connect() {
@@ -210,7 +209,9 @@ public class ReactiveIbkrClientImpl implements ReactiveIbkrClient, EWrapper {
     // ==================== EWrapper Implementation ====================
 
     @Override
-    public void connectAck(long timestamp) {}
+    public void connectAck(long timestamp) {
+        log.debug("Connection acknowledged at {}", Instant.ofEpochMilli(timestamp));
+    }
 
     @Override
     public void nextValidId(int orderId) {
