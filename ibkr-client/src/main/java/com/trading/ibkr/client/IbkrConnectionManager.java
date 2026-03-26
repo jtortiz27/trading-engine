@@ -2,6 +2,9 @@ package com.trading.ibkr.client;
 
 import com.ib.client.*;
 import com.trading.ibkr.config.IbkrGatewayProperties;
+import java.time.Instant;
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import lombok.extern.slf4j.Slf4j;
@@ -74,8 +77,8 @@ public class IbkrConnectionManager implements EWrapper {
   // ==================== EWrapper Implementation ====================
 
   @Override
-  public void connectAck() {
-    log.debug("Connection acknowledged by IBKR");
+  public void connectAck(long timestamp) {
+    log.debug("Connection acknowledged by IBKR at {}", Instant.ofEpochMilli(timestamp));
   }
 
   @Override
@@ -225,7 +228,7 @@ public class IbkrConnectionManager implements EWrapper {
   public void updateMktDepth(
       int tickerId,
       int position,
-      String operation,
+      int operation,
       int side,
       double price,
       Decimal size) {}
@@ -298,16 +301,13 @@ public class IbkrConnectionManager implements EWrapper {
   public void tickSnapshotEnd(int reqId) {}
 
   @Override
-  public void marketDataType(int reqId, int marketDataType) {}
-
-  @Override
-  public void commissionReport(CommissionReport commissionReport) {}
-
-  @Override
   public void position(String account, Contract contract, Decimal pos, double avgCost) {}
 
   @Override
   public void positionEnd() {}
+
+  @Override
+  public void stopRequested() {}
 
   @Override
   public void accountSummary(
@@ -365,8 +365,8 @@ public class IbkrConnectionManager implements EWrapper {
       int underlyingConId,
       String tradingClass,
       String multiplier,
-      SetOfString expirations,
-      SetOfDouble strikes) {}
+      Set<String> expirations,
+      Set<Double> strikes) {}
 
   @Override
   public void securityDefinitionOptionalParameterEnd(int reqId) {}
